@@ -1,4 +1,4 @@
-import type { User, Tenant } from '@/types';
+import type { User, Company } from '@/types';
 
 export interface LoginRequest {
   email: string;
@@ -10,7 +10,7 @@ export interface RegisterRequest {
   password: string;
   firstName: string;
   lastName: string;
-  organizationName: string;
+  companyName: string;
 }
 
 export interface AuthResponse {
@@ -19,7 +19,7 @@ export interface AuthResponse {
     accessToken: string;
     refreshToken: string;
   };
-  tenant: Tenant;
+  tenant: Company;
 }
 
 export interface RefreshTokenResponse {

@@ -16,7 +16,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useTenantStore } from '@/store/tenantStore';
+import { useCompanyStore } from '@/store/companyStore';
 import { formatPlanLabel } from '@/lib/utils/formatters';
 
 interface NavItem {
@@ -28,14 +28,14 @@ interface NavItem {
 const navItems: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/users', label: 'Users', icon: Users },
-  { href: '/dashboard/organization', label: 'Organization', icon: Building2 },
+  { href: '/dashboard/company', label: 'Company', icon: Building2 },
   { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
 ];
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
-  const { currentTenant } = useTenantStore();
+  const { currentCompany } = useCompanyStore();
 
   return (
     <aside
@@ -83,7 +83,7 @@ export function Sidebar() {
       </nav>
 
       {/* Plan badge */}
-      {!collapsed && currentTenant?.plan && (
+      {!collapsed && currentCompany?.plan && (
         <div className="border-t p-3">
           <Link
             href="/dashboard/billing"
@@ -91,8 +91,8 @@ export function Sidebar() {
           >
             <Settings className="h-4 w-4 shrink-0" />
             <span className="flex-1">Settings</span>
-            <Badge variant={currentTenant.plan === 'free' ? 'secondary' : 'default'} className="text-xs">
-              {formatPlanLabel(currentTenant.plan)}
+            <Badge variant={currentCompany.plan === 'free' ? 'secondary' : 'default'} className="text-xs">
+              {formatPlanLabel(currentCompany.plan)}
             </Badge>
           </Link>
         </div>

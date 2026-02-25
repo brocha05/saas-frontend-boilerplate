@@ -40,17 +40,17 @@ export interface User {
   lastName: string;
   avatar?: string;
   role: UserRole;
-  tenantId: string;
+  companyId: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-// ─── Tenant ───────────────────────────────────────────────────────────────────
+// ─── Company ──────────────────────────────────────────────────────────────────
 
 export type PlanType = 'free' | 'starter' | 'pro' | 'enterprise';
 
-export interface Tenant {
+export interface Company {
   id: string;
   name: string;
   slug: string;
@@ -74,7 +74,7 @@ export type SubscriptionStatus =
 
 export interface Subscription {
   id: string;
-  organizationId: string;
+  companyId: string;
   plan: PlanType;
   status: SubscriptionStatus;
   currentPeriodStart: string;
@@ -86,7 +86,7 @@ export interface Subscription {
 
 export interface PlanFeatures {
   maxUsers: number;
-  maxOrganizations: number;
+  maxCompanies: number;
   analytics: boolean;
   apiAccess: boolean;
   customDomain: boolean;
@@ -98,7 +98,7 @@ export interface PlanFeatures {
 export const PLAN_FEATURES: Record<PlanType, PlanFeatures> = {
   free: {
     maxUsers: 3,
-    maxOrganizations: 1,
+    maxCompanies: 1,
     analytics: false,
     apiAccess: false,
     customDomain: false,
@@ -108,7 +108,7 @@ export const PLAN_FEATURES: Record<PlanType, PlanFeatures> = {
   },
   starter: {
     maxUsers: 10,
-    maxOrganizations: 1,
+    maxCompanies: 1,
     analytics: true,
     apiAccess: true,
     customDomain: false,
@@ -118,7 +118,7 @@ export const PLAN_FEATURES: Record<PlanType, PlanFeatures> = {
   },
   pro: {
     maxUsers: 50,
-    maxOrganizations: 3,
+    maxCompanies: 3,
     analytics: true,
     apiAccess: true,
     customDomain: true,
@@ -128,7 +128,7 @@ export const PLAN_FEATURES: Record<PlanType, PlanFeatures> = {
   },
   enterprise: {
     maxUsers: Infinity,
-    maxOrganizations: Infinity,
+    maxCompanies: Infinity,
     analytics: true,
     apiAccess: true,
     customDomain: true,

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { User, Tenant } from '@/types';
+import type { User, Company } from '@/types';
 
 // ─── Cookie sync ──────────────────────────────────────────────────────────────
 // The middleware (proxy.ts) reads the access token from a cookie since it
@@ -28,7 +28,7 @@ interface AuthState {
 interface AuthActions {
   setUser: (user: User) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
-  setAuth: (user: User, accessToken: string, refreshToken: string, tenant: Tenant) => void;
+  setAuth: (user: User, accessToken: string, refreshToken: string, company: Company) => void;
   logout: () => void;
 }
 
@@ -49,12 +49,12 @@ export const useAuthStore = create<AuthStore>()(
         set({ accessToken, refreshToken });
       },
 
-      setAuth: (user, accessToken, refreshToken, tenant) => {
+      setAuth: (user, accessToken, refreshToken, company) => {
         setCookieToken(accessToken);
         set({ user, accessToken, refreshToken, isAuthenticated: true });
 
-        import('@/store/tenantStore').then(({ useTenantStore }) => {
-          useTenantStore.getState().setCurrentTenant(tenant);
+        import('@/store/companyStore').then(({ useCompanyStore }) => {
+          useCompanyStore.getState().setCurrentCompany(company);
         });
       },
 
@@ -66,8 +66,8 @@ export const useAuthStore = create<AuthStore>()(
           refreshToken: null,
           isAuthenticated: false,
         });
-        import('@/store/tenantStore').then(({ useTenantStore }) => {
-          useTenantStore.getState().clearTenant();
+        import('@/store/companyStore').then(({ useCompanyStore }) => {
+          useCompanyStore.getState().clearCompany();
         });
       },
     }),

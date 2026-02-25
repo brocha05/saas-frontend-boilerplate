@@ -52,9 +52,9 @@ export function UserDropdown() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/dashboard/organization">
+            <Link href="/dashboard/company">
               <Settings />
-              Organization
+              Company
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>

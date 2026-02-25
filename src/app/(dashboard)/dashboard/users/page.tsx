@@ -161,7 +161,7 @@ export default function UsersPage() {
         open={!!deleteId}
         onOpenChange={(o) => !o && setDeleteId(null)}
         title="Remove user"
-        description="This user will lose access to the organization. This action cannot be undone."
+        description="This user will lose access to the company. This action cannot be undone."
         confirmLabel="Remove"
         variant="destructive"
         isLoading={isDeleting}

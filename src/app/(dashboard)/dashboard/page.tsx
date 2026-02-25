@@ -12,7 +12,7 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <PageHeader
         title="Dashboard"
-        description="Welcome back! Here's what's happening with your organization."
+        description="Welcome back! Here's what's happening with your company."
       />
 
       {/* Stats grid */}
@@ -32,7 +32,7 @@ export default function DashboardPage() {
           icon={TrendingUp}
         />
         <StatCard
-          title="Organizations"
+          title="Companies"
           value="3"
           description="across all workspaces"
           icon={Building2}
@@ -64,12 +64,12 @@ export default function DashboardPage() {
       <Card>
         <CardHeader>
           <CardTitle>Recent Activity</CardTitle>
-          <CardDescription>Latest actions in your organization</CardDescription>
+          <CardDescription>Latest actions in your company</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             {[
-              { text: 'Jane Doe joined the organization', time: '2 minutes ago' },
+              { text: 'Jane Doe joined the company', time: '2 minutes ago' },
               { text: 'Project "Alpha" was updated', time: '1 hour ago' },
               { text: 'Invoice #1042 was paid', time: '3 hours ago' },
               { text: 'New API key generated', time: 'Yesterday' },

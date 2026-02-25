@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { billingApi } from '../api/billingApi';
-import { useTenantStore } from '@/store/tenantStore';
+import { useCompanyStore } from '@/store/companyStore';
 import { PLAN_FEATURES } from '@/types';
 import type { PlanFeatures, CheckoutSessionRequest } from '../types/billing.types';
 
@@ -16,15 +16,15 @@ export const billingKeys = {
 // ─── useSubscription ─────────────────────────────────────────────────────────
 
 export function useSubscription() {
-  const { currentTenant } = useTenantStore();
+  const { currentCompany } = useCompanyStore();
 
   const query = useQuery({
     queryKey: billingKeys.subscription(),
     queryFn: () => billingApi.getSubscription().then((r) => r.data),
-    enabled: !!currentTenant,
+    enabled: !!currentCompany,
   });
 
-  const plan = currentTenant?.plan ?? 'free';
+  const plan = currentCompany?.plan ?? 'free';
   const features: PlanFeatures = PLAN_FEATURES[plan];
 
   const hasFeature = (feature: keyof PlanFeatures): boolean => {

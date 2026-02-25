@@ -10,8 +10,8 @@ import { env } from '@/lib/config/env';
 const getAuthState = () =>
   import('@/store/authStore').then((m) => m.useAuthStore.getState());
 
-const getTenantState = () =>
-  import('@/store/tenantStore').then((m) => m.useTenantStore.getState());
+const getCompanyState = () =>
+  import('@/store/companyStore').then((m) => m.useCompanyStore.getState());
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: env.API_URL,
@@ -23,14 +23,14 @@ const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     const auth = await getAuthState();
-    const tenant = await getTenantState();
+    const company = await getCompanyState();
 
     if (auth.accessToken) {
       config.headers.Authorization = `Bearer ${auth.accessToken}`;
     }
 
-    if (tenant.currentTenantId) {
-      config.headers['X-Tenant-Id'] = tenant.currentTenantId;
+    if (company.currentCompanyId) {
+      config.headers['X-Tenant-Id'] = company.currentCompanyId;
     }
 
     return config;

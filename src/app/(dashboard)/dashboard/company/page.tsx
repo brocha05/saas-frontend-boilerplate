@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Loader2, Building2 } from 'lucide-react';
-import { useCurrentTenant, useUpdateTenant } from '@/modules/organization/hooks/useOrganization';
-import { useTenantStore } from '@/store/tenantStore';
+import { useCurrentCompany, useUpdateCompany } from '@/modules/company/hooks/useCompany';
+import { useCompanyStore } from '@/store/companyStore';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,36 +15,36 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { formatPlanLabel } from '@/lib/utils/formatters';
 
-const tenantSchema = z.object({
-  name: z.string().min(2, 'Tenant name must be at least 2 characters'),
+const companySchema = z.object({
+  name: z.string().min(2, 'Company name must be at least 2 characters'),
 });
 
-type TenantFormValues = z.infer<typeof tenantSchema>;
+type CompanyFormValues = z.infer<typeof companySchema>;
 
-export default function OrganizationPage() {
-  const { currentTenant } = useTenantStore();
-  const { isLoading } = useCurrentTenant();
-  const { mutate: updateTenant, isPending } = useUpdateTenant();
+export default function CompanyPage() {
+  const { currentCompany } = useCompanyStore();
+  const { isLoading } = useCurrentCompany();
+  const { mutate: updateCompany, isPending } = useUpdateCompany();
 
   const {
     register,
     handleSubmit,
     formState: { errors, isDirty },
-  } = useForm<TenantFormValues>({
-    resolver: zodResolver(tenantSchema),
-    values: { name: currentTenant?.name ?? '' },
+  } = useForm<CompanyFormValues>({
+    resolver: zodResolver(companySchema),
+    values: { name: currentCompany?.name ?? '' },
   });
 
-  const onSubmit = (data: TenantFormValues) => {
-    if (!currentTenant) return;
-    updateTenant({ id: currentTenant.id, data });
+  const onSubmit = (data: CompanyFormValues) => {
+    if (!currentCompany) return;
+    updateCompany({ id: currentCompany.id, data });
   };
 
   return (
     <div className="space-y-6 max-w-2xl">
       <PageHeader
-        title="Organization"
-        description="Manage your organization settings and preferences."
+        title="Company"
+        description="Manage your company settings and preferences."
       />
 
       <Card>
@@ -52,11 +52,11 @@ export default function OrganizationPage() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>General</CardTitle>
-              <CardDescription>Update your organization details.</CardDescription>
+              <CardDescription>Update your company details.</CardDescription>
             </div>
-            {currentTenant?.plan && (
-              <Badge variant={currentTenant.plan === 'free' ? 'secondary' : 'default'}>
-                {formatPlanLabel(currentTenant.plan)} plan
+            {currentCompany?.plan && (
+              <Badge variant={currentCompany.plan === 'free' ? 'secondary' : 'default'}>
+                {formatPlanLabel(currentCompany.plan)} plan
               </Badge>
             )}
           </div>
@@ -70,7 +70,7 @@ export default function OrganizationPage() {
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Organization name</Label>
+                <Label htmlFor="name">Company name</Label>
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border bg-muted">
                     <Building2 className="h-5 w-5 text-muted-foreground" />
@@ -88,8 +88,8 @@ export default function OrganizationPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>Organization slug</Label>
-                <Input value={currentTenant?.slug ?? ''} disabled className="font-mono text-sm" />
+                <Label>Company slug</Label>
+                <Input value={currentCompany?.slug ?? ''} disabled className="font-mono text-sm" />
                 <p className="text-xs text-muted-foreground">
                   The slug is auto-generated and cannot be changed.
                 </p>
@@ -117,9 +117,9 @@ export default function OrganizationPage() {
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium">Delete organization</p>
+              <p className="text-sm font-medium">Delete company</p>
               <p className="text-xs text-muted-foreground mt-1">
-                Permanently delete this organization and all associated data.
+                Permanently delete this company and all associated data.
               </p>
             </div>
             <Button variant="destructive" size="sm">

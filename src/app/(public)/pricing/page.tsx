@@ -12,7 +12,7 @@ const plans = [
     name: 'Free',
     price: 0,
     description: 'Perfect for trying out the platform.',
-    features: ['Up to 3 users', '1 organization', 'Basic dashboard', 'Community support'],
+    features: ['Up to 3 users', '1 company', 'Basic dashboard', 'Community support'],
     cta: 'Get started',
     href: '/register',
     highlighted: false,
@@ -23,7 +23,7 @@ const plans = [
     description: 'Great for small teams getting started.',
     features: [
       'Up to 10 users',
-      '1 organization',
+      '1 company',
       'Analytics',
       'API access',
       'Email support',
@@ -38,7 +38,7 @@ const plans = [
     description: 'For growing teams that need more power.',
     features: [
       'Up to 50 users',
-      '3 organizations',
+      '3 companies',
       'Advanced analytics',
       'Custom domain',
       'Audit logs',
@@ -51,10 +51,10 @@ const plans = [
   {
     name: 'Enterprise',
     price: null,
-    description: 'For large organizations with custom needs.',
+    description: 'For large companies with custom needs.',
     features: [
       'Unlimited users',
-      'Unlimited organizations',
+      'Unlimited companies',
       'SSO / SAML',
       'Dedicated support',
       'SLA guarantee',

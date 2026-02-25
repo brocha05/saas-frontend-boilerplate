@@ -2,7 +2,7 @@
 
 import { Check, Loader2 } from 'lucide-react';
 import { useCheckout } from '@/modules/billing/hooks/useSubscription';
-import { useOrgStore } from '@/store/orgStore';
+import { useCompanyStore } from '@/store/companyStore';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -32,7 +32,7 @@ const plans = [
     priceId: PRICE_IDS.pro_monthly,
     features: [
       'Up to 50 users',
-      '3 organizations',
+      '3 companies',
       'Advanced analytics',
       'Custom domain',
       'Audit logs',
@@ -51,7 +51,7 @@ const plans = [
 ];
 
 export default function UpgradePage() {
-  const { currentOrg } = useOrgStore();
+  const { currentCompany } = useCompanyStore();
   const { mutate: checkout, isPending } = useCheckout();
 
   return (
@@ -63,7 +63,7 @@ export default function UpgradePage() {
 
       <div className="grid gap-6 sm:grid-cols-3">
         {plans.map((plan) => {
-          const isCurrent = currentOrg?.plan === plan.plan;
+          const isCurrent = currentCompany?.plan === plan.plan;
           return (
             <div
               key={plan.name}

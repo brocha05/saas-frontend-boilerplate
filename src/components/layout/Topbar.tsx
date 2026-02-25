@@ -4,7 +4,7 @@ import { Bell, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { UserDropdown } from './UserDropdown';
-import { OrgSelector } from './OrgSelector';
+import { CompanySelector } from './CompanySelector';
 
 interface TopbarProps {
   title?: string;
@@ -16,7 +16,7 @@ export function Topbar({ title }: TopbarProps) {
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-background/95 px-6 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center gap-4">
-        <OrgSelector />
+        <CompanySelector />
         {title && (
           <h1 className="text-lg font-semibold text-foreground hidden sm:block">{title}</h1>
         )}

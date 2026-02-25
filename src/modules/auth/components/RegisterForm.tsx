@@ -74,15 +74,15 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="organizationName">Organization name</Label>
+        <Label htmlFor="companyName">Company name</Label>
         <Input
-          id="organizationName"
+          id="companyName"
           placeholder="Acme Inc."
-          className={cn(errors.organizationName && 'border-destructive')}
-          {...register('organizationName')}
+          className={cn(errors.companyName && 'border-destructive')}
+          {...register('companyName')}
         />
-        {errors.organizationName && (
-          <p className="text-sm text-destructive">{errors.organizationName.message}</p>
+        {errors.companyName && (
+          <p className="text-sm text-destructive">{errors.companyName.message}</p>
         )}
       </div>
 
