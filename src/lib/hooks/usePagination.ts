@@ -36,18 +36,22 @@ export function usePagination(
   });
 
   const setPage = useCallback((page: number) => setState((s) => ({ ...s, page })), []);
+
   const setLimit = useCallback(
     (limit: number) => setState((s) => ({ ...s, limit, page: 1 })),
     []
   );
+
   const setSearch = useCallback(
     (search: string) => setState((s) => ({ ...s, search, page: 1 })),
     []
   );
+
   const setSortBy = useCallback(
     (sortBy: string) => setState((s) => ({ ...s, sortBy, page: 1 })),
     []
   );
+  
   const toggleSortOrder = useCallback(
     () =>
       setState((s) => ({ ...s, sortOrder: s.sortOrder === 'asc' ? 'desc' : 'asc' })),

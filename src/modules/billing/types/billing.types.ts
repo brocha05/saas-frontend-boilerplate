@@ -4,8 +4,6 @@ export type { Subscription, PlanType, PlanFeatures };
 
 export interface CheckoutSessionRequest {
   priceId: string;
-  successUrl?: string;
-  cancelUrl?: string;
 }
 
 export interface CheckoutSessionResponse {

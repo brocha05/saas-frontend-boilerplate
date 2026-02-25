@@ -9,7 +9,6 @@ import type { UpdateCompanyRequest } from '../types/company.types';
 export const companyKeys = {
   all: ['companies'] as const,
   current: () => [...companyKeys.all, 'current'] as const,
-  list: () => [...companyKeys.all, 'list'] as const,
 };
 
 export function useCurrentCompany() {
@@ -21,20 +20,13 @@ export function useCurrentCompany() {
   } as Parameters<typeof useQuery>[0]);
 }
 
-export function useCompanies() {
-  return useQuery({
-    queryKey: companyKeys.list(),
-    queryFn: () => companyApi.getAll().then((r) => r.data),
-  });
-}
-
 export function useUpdateCompany() {
   const queryClient = useQueryClient();
   const { updateCurrentCompany } = useCompanyStore();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateCompanyRequest }) =>
-      companyApi.update(id, data).then((r) => r.data),
+    mutationFn: (data: UpdateCompanyRequest) =>
+      companyApi.update(data).then((r) => r.data),
     onSuccess: (company) => {
       queryClient.setQueryData(companyKeys.current(), company);
       updateCurrentCompany(company);

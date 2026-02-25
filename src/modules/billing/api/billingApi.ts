@@ -8,17 +8,19 @@ import type {
 } from '../types/billing.types';
 
 export const billingApi = {
-  getSubscription: () => apiClient.get<Subscription>('/billing/subscription'),
+  getSubscription: () => apiClient.get<Subscription>('/subscriptions'),
 
-  getInvoices: () => apiClient.get<Invoice[]>('/billing/invoices'),
+  getInvoices: () => apiClient.get<Invoice[]>('/subscriptions/invoices'),
 
   createCheckoutSession: (data: CheckoutSessionRequest) =>
-    apiClient.post<CheckoutSessionResponse>('/billing/checkout', data),
+    apiClient.post<CheckoutSessionResponse>('/subscriptions/checkout', data),
 
   createBillingPortalSession: () =>
-    apiClient.post<BillingPortalResponse>('/billing/portal'),
+    apiClient.get<BillingPortalResponse>('/subscriptions/portal'),
 
-  cancelSubscription: () => apiClient.post<Subscription>('/billing/cancel'),
+  cancelSubscription: () =>
+    apiClient.delete<{ message: string }>('/subscriptions/cancel'),
 
-  resumeSubscription: () => apiClient.post<Subscription>('/billing/resume'),
+  resumeSubscription: () =>
+    apiClient.post<{ message: string }>('/subscriptions/resume'),
 };

@@ -36,8 +36,7 @@ export default function CompanyPage() {
   });
 
   const onSubmit = (data: CompanyFormValues) => {
-    if (!currentCompany) return;
-    updateCompany({ id: currentCompany.id, data });
+    updateCompany(data);
   };
 
   return (

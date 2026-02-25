@@ -111,13 +111,7 @@ export default function UpgradePage() {
                 className="w-full"
                 variant={plan.highlighted ? 'default' : 'outline'}
                 disabled={isPending || isCurrent}
-                onClick={() =>
-                  checkout({
-                    priceId: plan.priceId,
-                    successUrl: `${window.location.origin}/dashboard/billing?success=1`,
-                    cancelUrl: `${window.location.origin}/dashboard/upgrade`,
-                  })
-                }
+                onClick={() => checkout({ priceId: plan.priceId })}
               >
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {plan.price === null ? 'Contact sales' : 'Upgrade now'}

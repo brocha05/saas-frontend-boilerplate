@@ -28,12 +28,10 @@ export default function UsersPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const pagination = usePagination();
-  const debouncedSearch = useDebounce(pagination.search, 400);
 
   const { data, isLoading } = useUsers({
     page: pagination.page,
     limit: pagination.limit,
-    search: debouncedSearch,
   });
 
   const { mutate: deleteUser, isPending: isDeleting } = useDeleteUser();
