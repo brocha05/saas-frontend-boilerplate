@@ -50,7 +50,7 @@ export function useLogin() {
       return (body && 'timestamp' in body && 'data' in body) ? body.data : body;
     },
     onSuccess: (data) => {
-      setAuth(data.user, data.tokens.accessToken, data.tokens.refreshToken, data.tenant);
+      setAuth(data.user, data.tokens.accessToken, data.tokens.refreshToken, data.company);
       toast.success(`Welcome back, ${data.user.firstName}!`);
       window.location.href = '/dashboard';
     },
@@ -90,7 +90,7 @@ export function useRegister() {
       return (body && 'timestamp' in body && 'data' in body) ? body.data : body;
     },
     onSuccess: (data) => {
-      setAuth(data.user, data.tokens.accessToken, data.tokens.refreshToken, data.tenant);
+      setAuth(data.user, data.tokens.accessToken, data.tokens.refreshToken, data.company);
       toast.success('Account created successfully!');
       window.location.href = '/dashboard';
     },

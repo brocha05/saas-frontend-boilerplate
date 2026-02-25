@@ -30,7 +30,7 @@ apiClient.interceptors.request.use(
     }
 
     if (company.currentCompanyId) {
-      config.headers['X-Tenant-Id'] = company.currentCompanyId;
+      config.headers['X-Company-Id'] = company.currentCompanyId;
     }
 
     return config;

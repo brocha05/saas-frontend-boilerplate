@@ -19,7 +19,7 @@ export interface AuthResponse {
     accessToken: string;
     refreshToken: string;
   };
-  tenant: Company;
+  company: Company;
 }
 
 export interface RefreshTokenResponse {
