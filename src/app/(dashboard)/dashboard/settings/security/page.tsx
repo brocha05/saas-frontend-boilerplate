@@ -150,11 +150,7 @@ export default function SecuritySettingsPage() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="confirmPassword">Confirm new password</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  {...register('confirmPassword')}
-                />
+                <Input id="confirmPassword" type="password" {...register('confirmPassword')} />
                 {errors.confirmPassword && (
                   <p className="text-xs text-destructive">{errors.confirmPassword.message}</p>
                 )}
@@ -181,11 +177,7 @@ export default function SecuritySettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setDeleteOpen(true)}
-            >
+            <Button variant="destructive" size="sm" onClick={() => setDeleteOpen(true)}>
               Delete my account
             </Button>
           </CardContent>

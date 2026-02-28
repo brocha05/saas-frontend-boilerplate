@@ -125,7 +125,6 @@ export interface Invoice {
   description?: string;
 }
 
-
 // ─── Files ────────────────────────────────────────────────────────────────────
 
 export interface FileRecord {
@@ -165,5 +164,3 @@ export interface OnboardingStatus {
   completed: boolean;
   steps: OnboardingStep[];
 }
-
-

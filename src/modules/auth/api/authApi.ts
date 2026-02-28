@@ -16,8 +16,7 @@ export const authApi = {
       refreshToken,
     }),
 
-  forgotPassword: (email: string) =>
-    apiClient.post<void>('/auth/forgot-password', { email }),
+  forgotPassword: (email: string) => apiClient.post<void>('/auth/forgot-password', { email }),
 
   resetPassword: (token: string, password: string) =>
     apiClient.post<void>('/auth/reset-password', { token, password }),
@@ -28,9 +27,7 @@ export const authApi = {
   acceptInvite: (token: string, firstName: string, lastName: string, password: string) =>
     apiClient.post<AuthResponse>('/auth/accept-invite', { token, firstName, lastName, password }),
 
-  confirmEmail: (token: string) =>
-    apiClient.post<void>('/auth/confirm-email', { token }),
+  confirmEmail: (token: string) => apiClient.post<void>('/auth/confirm-email', { token }),
 
-  resendConfirmation: () =>
-    apiClient.post<void>('/auth/resend-confirmation'),
+  resendConfirmation: () => apiClient.post<void>('/auth/resend-confirmation'),
 };

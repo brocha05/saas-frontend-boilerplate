@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const PUBLIC_ROUTES = ['/login', '/register', '/pricing', '/forgot-password', '/reset-password', '/accept-invite'];
+const PUBLIC_ROUTES = [
+  '/login',
+  '/register',
+  '/pricing',
+  '/forgot-password',
+  '/reset-password',
+  '/accept-invite',
+];
 const AUTH_ROUTES = ['/login', '/register'];
 const PROTECTED_PREFIXES = ['/dashboard', '/admin'];
 
@@ -16,7 +23,8 @@ export function proxy(request: NextRequest) {
 
   const isPublicRoute = PUBLIC_ROUTES.some((r) => pathname.startsWith(r));
   const isAuthRoute = AUTH_ROUTES.some((r) => pathname.startsWith(r));
-  const isProtectedRoute = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p)) || pathname === '/';
+  const isProtectedRoute =
+    PROTECTED_PREFIXES.some((p) => pathname.startsWith(p)) || pathname === '/';
 
   // Redirect authenticated users away from auth pages
   if (isAuthRoute && token) {
@@ -34,7 +42,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|public|api).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|public|api).*)'],
 };

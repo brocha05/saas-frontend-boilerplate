@@ -5,8 +5,7 @@ export const adminApi = {
   getCompanies: (params?: { page?: number; limit?: number; search?: string }) =>
     apiClient.get<PaginatedResponse<CompanyWithDetails>>('/admin/companies', { params }),
 
-  getCompany: (id: string) =>
-    apiClient.get<CompanyWithDetails>(`/admin/companies/${id}`),
+  getCompany: (id: string) => apiClient.get<CompanyWithDetails>(`/admin/companies/${id}`),
 
   deactivateCompany: (id: string) =>
     apiClient.patch<CompanyWithDetails>(`/admin/companies/${id}/deactivate`),

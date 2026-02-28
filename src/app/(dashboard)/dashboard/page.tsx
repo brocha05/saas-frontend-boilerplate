@@ -16,11 +16,16 @@ import { formatDate, formatCurrency } from '@/lib/utils/formatters';
 
 function getStatusColor(status: string) {
   switch (status?.toUpperCase()) {
-    case 'ACTIVE': return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400';
-    case 'TRIALING': return 'bg-blue-500/15 text-blue-600 dark:text-blue-400';
-    case 'PAST_DUE': return 'bg-amber-500/15 text-amber-600 dark:text-amber-400';
-    case 'CANCELED': return 'bg-red-500/15 text-red-600 dark:text-red-400';
-    default: return 'bg-muted text-muted-foreground';
+    case 'ACTIVE':
+      return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400';
+    case 'TRIALING':
+      return 'bg-blue-500/15 text-blue-600 dark:text-blue-400';
+    case 'PAST_DUE':
+      return 'bg-amber-500/15 text-amber-600 dark:text-amber-400';
+    case 'CANCELED':
+      return 'bg-red-500/15 text-red-600 dark:text-red-400';
+    default:
+      return 'bg-muted text-muted-foreground';
   }
 }
 
@@ -100,16 +105,16 @@ export default function DashboardPage() {
                 {usersData.data.slice(0, 5).map((u) => (
                   <div key={u.id} className="flex items-center gap-3">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                      {u.firstName.charAt(0)}{u.lastName.charAt(0)}
+                      {u.firstName.charAt(0)}
+                      {u.lastName.charAt(0)}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{u.firstName} {u.lastName}</p>
+                      <p className="truncate text-sm font-medium">
+                        {u.firstName} {u.lastName}
+                      </p>
                       <p className="truncate text-xs text-muted-foreground">{u.email}</p>
                     </div>
-                    <Badge
-                      variant="secondary"
-                      className="shrink-0 text-xs capitalize"
-                    >
+                    <Badge variant="secondary" className="shrink-0 text-xs capitalize">
                       {u.role.toLowerCase()}
                     </Badge>
                   </div>
@@ -129,7 +134,8 @@ export default function DashboardPage() {
             <div>
               <h3 className="font-semibold">{subscription.plan?.name ?? 'Current Plan'}</h3>
               <p className="text-sm text-muted-foreground">
-                {formatCurrency(subscription.plan?.price ?? 0)} / {subscription.plan?.interval?.toLowerCase() ?? 'month'}
+                {formatCurrency(subscription.plan?.price ?? 0)} /{' '}
+                {subscription.plan?.interval?.toLowerCase() ?? 'month'}
               </p>
             </div>
             <span

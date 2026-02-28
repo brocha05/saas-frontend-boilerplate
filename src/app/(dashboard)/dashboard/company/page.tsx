@@ -142,7 +142,11 @@ export default function CompanyPage() {
                   </div>
                   <div className="space-y-1.5">
                     <Label>Slug</Label>
-                    <Input value={company?.slug ?? ''} disabled className="bg-muted/50 font-mono text-sm" />
+                    <Input
+                      value={company?.slug ?? ''}
+                      disabled
+                      className="bg-muted/50 font-mono text-sm"
+                    />
                     <p className="text-xs text-muted-foreground">
                       Used in URLs — contact support to change.
                     </p>
@@ -174,9 +178,7 @@ export default function CompanyPage() {
                   <ShieldAlert className="h-4 w-4" />
                   Danger Zone
                 </CardTitle>
-                <CardDescription>
-                  Permanently delete this company and all its data.
-                </CardDescription>
+                <CardDescription>Permanently delete this company and all its data.</CardDescription>
               </CardHeader>
               <CardContent>
                 <Button variant="destructive" size="sm" onClick={() => setDeleteOpen(true)}>
@@ -195,7 +197,9 @@ export default function CompanyPage() {
               Members
             </CardTitle>
             <CardDescription>
-              {membersLoading ? '—' : `${members?.length ?? 0} member${members?.length !== 1 ? 's' : ''}`}
+              {membersLoading
+                ? '—'
+                : `${members?.length ?? 0} member${members?.length !== 1 ? 's' : ''}`}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
@@ -210,7 +214,10 @@ export default function CompanyPage() {
                   </div>
                 ))
               : members?.map((m) => (
-                  <div key={m.id} className="flex items-center gap-3 border-b px-6 py-3 last:border-0">
+                  <div
+                    key={m.id}
+                    className="flex items-center gap-3 border-b px-6 py-3 last:border-0"
+                  >
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
                         {formatInitials(m.firstName, m.lastName)}

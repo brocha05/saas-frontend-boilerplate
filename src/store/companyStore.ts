@@ -29,8 +29,7 @@ export const useCompanyStore = create<CompanyStore>()(
           currentCompany: state.currentCompany ? { ...state.currentCompany, ...data } : null,
         })),
 
-      clearCompany: () =>
-        set({ currentCompanyId: null, currentCompany: null }),
+      clearCompany: () => set({ currentCompanyId: null, currentCompany: null }),
     }),
     {
       name: 'company-storage',

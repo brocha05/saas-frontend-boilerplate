@@ -120,8 +120,13 @@ export function useCurrentUser() {
 
 export function useChangePassword() {
   return useMutation({
-    mutationFn: ({ currentPassword, newPassword }: { currentPassword: string; newPassword: string }) =>
-      authApi.changePassword(currentPassword, newPassword),
+    mutationFn: ({
+      currentPassword,
+      newPassword,
+    }: {
+      currentPassword: string;
+      newPassword: string;
+    }) => authApi.changePassword(currentPassword, newPassword),
     onSuccess: () => toast.success('Password updated successfully.'),
     onError: (error) => {
       if (isAxiosError(error) && error.response?.status === 401) {
@@ -170,7 +175,12 @@ export function useAcceptInvite() {
       lastName: string;
       password: string;
     }) => {
-      const r = await authApi.acceptInvite(data.token, data.firstName, data.lastName, data.password);
+      const r = await authApi.acceptInvite(
+        data.token,
+        data.firstName,
+        data.lastName,
+        data.password
+      );
       return r.data as any;
     },
     onSuccess: (data) => {

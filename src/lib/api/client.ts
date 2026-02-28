@@ -1,14 +1,8 @@
-import axios, {
-  AxiosInstance,
-  InternalAxiosRequestConfig,
-  AxiosResponse,
-  AxiosError,
-} from 'axios';
+import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { env } from '@/lib/config/env';
 
 // We use lazy imports to avoid circular dependency issues with Zustand stores
-const getAuthState = () =>
-  import('@/store/authStore').then((m) => m.useAuthStore.getState());
+const getAuthState = () => import('@/store/authStore').then((m) => m.useAuthStore.getState());
 
 const getCompanyState = () =>
   import('@/store/companyStore').then((m) => m.useCompanyStore.getState());

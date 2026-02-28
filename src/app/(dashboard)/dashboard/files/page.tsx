@@ -38,8 +38,7 @@ function formatBytes(bytes: number): string {
 }
 
 function FileIcon({ mimeType }: { mimeType: string }) {
-  if (mimeType.startsWith('image/'))
-    return <Image className="h-5 w-5 text-blue-500" />;
+  if (mimeType.startsWith('image/')) return <Image className="h-5 w-5 text-blue-500" />;
   if (mimeType.includes('pdf') || mimeType.includes('text'))
     return <FileText className="h-5 w-5 text-red-500" />;
   return <File className="h-5 w-5 text-muted-foreground" />;
@@ -74,20 +73,12 @@ export default function FilesPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Files"
-        description="Upload and manage files in your workspace."
-      >
+      <PageHeader title="Files" description="Upload and manage files in your workspace.">
         <Button onClick={() => inputRef.current?.click()} disabled={uploading}>
           <Upload className="h-4 w-4" />
           {uploading ? 'Uploading...' : 'Upload file'}
         </Button>
-        <input
-          ref={inputRef}
-          type="file"
-          className="hidden"
-          onChange={handleUpload}
-        />
+        <input ref={inputRef} type="file" className="hidden" onChange={handleUpload} />
       </PageHeader>
 
       <Card>

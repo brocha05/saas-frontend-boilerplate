@@ -24,11 +24,16 @@ import type { Plan } from '@/types';
 
 function statusVariant(status: string) {
   switch (status?.toUpperCase()) {
-    case 'ACTIVE': return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400';
-    case 'TRIALING': return 'bg-blue-500/15 text-blue-600 dark:text-blue-400';
-    case 'PAST_DUE': return 'bg-amber-500/15 text-amber-600 dark:text-amber-400';
-    case 'CANCELED': return 'bg-red-500/15 text-red-600 dark:text-red-400';
-    default: return 'bg-muted text-muted-foreground';
+    case 'ACTIVE':
+      return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400';
+    case 'TRIALING':
+      return 'bg-blue-500/15 text-blue-600 dark:text-blue-400';
+    case 'PAST_DUE':
+      return 'bg-amber-500/15 text-amber-600 dark:text-amber-400';
+    case 'CANCELED':
+      return 'bg-red-500/15 text-red-600 dark:text-red-400';
+    default:
+      return 'bg-muted text-muted-foreground';
   }
 }
 
@@ -133,13 +138,21 @@ export default function BillingPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="text-lg font-semibold">{subscription.plan?.name ?? 'Active Plan'}</p>
-                    <span className={cn('rounded-full px-2.5 py-0.5 text-xs font-semibold', statusVariant(subscription.status))}>
+                    <p className="text-lg font-semibold">
+                      {subscription.plan?.name ?? 'Active Plan'}
+                    </p>
+                    <span
+                      className={cn(
+                        'rounded-full px-2.5 py-0.5 text-xs font-semibold',
+                        statusVariant(subscription.status)
+                      )}
+                    >
                       {subscription.status}
                     </span>
                   </div>
                   <p className="mt-0.5 text-sm text-muted-foreground">
-                    {formatCurrency(subscription.plan?.price ?? 0)} / {subscription.plan?.interval?.toLowerCase() ?? 'month'}
+                    {formatCurrency(subscription.plan?.price ?? 0)} /{' '}
+                    {subscription.plan?.interval?.toLowerCase() ?? 'month'}
                   </p>
                 </div>
               </div>
@@ -232,7 +245,10 @@ export default function BillingPage() {
           {invoicesLoading ? (
             <div className="space-y-0 px-6">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex items-center justify-between border-b py-4 last:border-0">
+                <div
+                  key={i}
+                  className="flex items-center justify-between border-b py-4 last:border-0"
+                >
                   <Skeleton className="h-4 w-32" />
                   <Skeleton className="h-4 w-20" />
                 </div>
@@ -247,21 +263,27 @@ export default function BillingPage() {
                 className="flex items-center justify-between border-b px-6 py-4 last:border-0"
               >
                 <div>
-                  <p className="text-sm font-medium">Invoice #{invoice.number ?? invoice.id.slice(0, 8)}</p>
+                  <p className="text-sm font-medium">
+                    Invoice #{invoice.number ?? invoice.id.slice(0, 8)}
+                  </p>
                   <p className="text-xs text-muted-foreground">
-                    {invoice.created ? formatDate(new Date(invoice.created * 1000).toISOString()) : '—'}
+                    {invoice.created
+                      ? formatDate(new Date(invoice.created * 1000).toISOString())
+                      : '—'}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-semibold">
                     {formatCurrency(invoice.amount, invoice.currency)}
                   </span>
-                  <span className={cn(
-                    'rounded-full px-2.5 py-0.5 text-xs font-medium capitalize',
-                    invoice.status === 'paid'
-                      ? 'bg-emerald-500/15 text-emerald-600'
-                      : 'bg-amber-500/15 text-amber-600'
-                  )}>
+                  <span
+                    className={cn(
+                      'rounded-full px-2.5 py-0.5 text-xs font-medium capitalize',
+                      invoice.status === 'paid'
+                        ? 'bg-emerald-500/15 text-emerald-600'
+                        : 'bg-amber-500/15 text-amber-600'
+                    )}
+                  >
                     {invoice.status}
                   </span>
                   {(invoice.invoicePdf || invoice.hostedInvoiceUrl) && (

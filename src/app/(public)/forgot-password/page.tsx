@@ -19,7 +19,11 @@ export default function ForgotPasswordPage() {
   const [sent, setSent] = useState(false);
   const { mutate, isPending } = useForgotPassword();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 

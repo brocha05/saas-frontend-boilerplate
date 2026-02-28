@@ -9,8 +9,7 @@ export const usersApi = {
   updateMe: (data: { firstName?: string; lastName?: string }) =>
     apiClient.patch<User>('/users/me', data),
 
-  deleteMe: (password: string) =>
-    apiClient.delete<void>('/users/me', { data: { password } }),
+  deleteMe: (password: string) => apiClient.delete<void>('/users/me', { data: { password } }),
 
   // ─── Admin user management ────────────────────────────────────────────────
   getAll: (params?: UsersQueryParams) =>
@@ -20,8 +19,7 @@ export const usersApi = {
 
   create: (data: CreateUserRequest) => apiClient.post<User>('/users', data),
 
-  update: (id: string, data: UpdateUserRequest) =>
-    apiClient.patch<User>(`/users/${id}`, data),
+  update: (id: string, data: UpdateUserRequest) => apiClient.patch<User>(`/users/${id}`, data),
 
   remove: (id: string) => apiClient.delete<void>(`/users/${id}`),
 

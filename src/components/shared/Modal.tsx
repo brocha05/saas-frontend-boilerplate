@@ -17,14 +17,7 @@ interface ModalProps {
   className?: string;
 }
 
-export function Modal({
-  open,
-  onOpenChange,
-  title,
-  description,
-  children,
-  className,
-}: ModalProps) {
+export function Modal({ open, onOpenChange, title, description, children, className }: ModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={className}>

@@ -26,8 +26,7 @@ export function useUpdateCompany() {
   const { updateCurrentCompany } = useCompanyStore();
 
   return useMutation({
-    mutationFn: (data: UpdateCompanyRequest) =>
-      companyApi.update(data).then((r) => r.data),
+    mutationFn: (data: UpdateCompanyRequest) => companyApi.update(data).then((r) => r.data),
     onSuccess: (company) => {
       queryClient.setQueryData(companyKeys.current(), company);
       updateCurrentCompany(company);

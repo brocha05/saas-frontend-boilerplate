@@ -37,20 +37,21 @@ export const filesApi = {
   getPresignedUpload: (data: PresignedUploadRequest) =>
     apiClient.post<PresignedUploadResponse>('/files/presigned-upload', data),
 
-  confirmUpload: (data: ConfirmUploadRequest) =>
-    apiClient.post<FileRecord>('/files/confirm', data),
+  confirmUpload: (data: ConfirmUploadRequest) => apiClient.post<FileRecord>('/files/confirm', data),
 
-  getAll: (params?: { resourceType?: string; resourceId?: string; page?: number; limit?: number }) =>
-    apiClient.get<PaginatedResponse<FileRecord>>('/files', { params }),
+  getAll: (params?: {
+    resourceType?: string;
+    resourceId?: string;
+    page?: number;
+    limit?: number;
+  }) => apiClient.get<PaginatedResponse<FileRecord>>('/files', { params }),
 
-  getById: (id: string) =>
-    apiClient.get<FileRecord>(`/files/${id}`),
+  getById: (id: string) => apiClient.get<FileRecord>(`/files/${id}`),
 
   getDownloadUrl: (id: string, expiresIn?: number) =>
     apiClient.get<{ url: string }>(`/files/${id}/download`, {
       params: expiresIn ? { expiresIn } : undefined,
     }),
 
-  delete: (id: string) =>
-    apiClient.delete<void>(`/files/${id}`),
+  delete: (id: string) => apiClient.delete<void>(`/files/${id}`),
 };

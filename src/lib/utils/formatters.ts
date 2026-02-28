@@ -27,11 +27,7 @@ export function formatRelativeTime(date: string | Date): string {
 
 // ─── Currency formatters ─────────────────────────────────────────────────────
 
-export function formatCurrency(
-  amountInCents: number,
-  currency = 'USD',
-  locale = 'en-US'
-): string {
+export function formatCurrency(amountInCents: number, currency = 'USD', locale = 'en-US'): string {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,

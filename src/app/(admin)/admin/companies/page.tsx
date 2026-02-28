@@ -27,7 +27,11 @@ import Link from 'next/link';
 import type { CompanyWithDetails } from '@/types';
 
 export default function AdminCompaniesPage() {
-  const [actionCompany, setActionCompany] = useState<{ id: string; name: string; deleted: boolean } | null>(null);
+  const [actionCompany, setActionCompany] = useState<{
+    id: string;
+    name: string;
+    deleted: boolean;
+  } | null>(null);
   const pagination = usePagination();
   const debouncedSearch = useDebounce(pagination.search, 350);
 
@@ -52,10 +56,7 @@ export default function AdminCompaniesPage() {
               {co.name.charAt(0).toUpperCase()}
             </div>
             <div>
-              <Link
-                href={`/admin/companies/${co.id}`}
-                className="font-medium hover:underline"
-              >
+              <Link href={`/admin/companies/${co.id}`} className="font-medium hover:underline">
                 {co.name}
               </Link>
               <p className="font-mono text-xs text-muted-foreground">{co.slug}</p>
@@ -71,7 +72,9 @@ export default function AdminCompaniesPage() {
         const deleted = !!row.original.deletedAt;
         return (
           <div className="flex items-center gap-1.5">
-            <span className={`h-1.5 w-1.5 rounded-full ${deleted ? 'bg-red-500' : 'bg-emerald-500'}`} />
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${deleted ? 'bg-red-500' : 'bg-emerald-500'}`}
+            />
             <span className="text-sm">{deleted ? 'Deactivated' : 'Active'}</span>
           </div>
         );

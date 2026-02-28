@@ -11,8 +11,7 @@ function setCookieToken(token: string | null) {
   if (token) {
     document.cookie = `access-token=${token}; path=/; SameSite=Lax`;
   } else {
-    document.cookie =
-      'access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+    document.cookie = 'access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
   }
 }
 

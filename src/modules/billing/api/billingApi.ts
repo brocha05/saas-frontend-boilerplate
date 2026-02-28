@@ -16,12 +16,9 @@ export const billingApi = {
   createCheckoutSession: (data: CheckoutSessionRequest) =>
     apiClient.post<CheckoutSessionResponse>('/subscriptions/checkout', data),
 
-  createBillingPortalSession: () =>
-    apiClient.get<BillingPortalResponse>('/subscriptions/portal'),
+  createBillingPortalSession: () => apiClient.get<BillingPortalResponse>('/subscriptions/portal'),
 
-  cancelSubscription: () =>
-    apiClient.delete<{ message: string }>('/subscriptions/cancel'),
+  cancelSubscription: () => apiClient.delete<{ message: string }>('/subscriptions/cancel'),
 
-  resumeSubscription: () =>
-    apiClient.post<{ message: string }>('/subscriptions/resume'),
+  resumeSubscription: () => apiClient.post<{ message: string }>('/subscriptions/resume'),
 };

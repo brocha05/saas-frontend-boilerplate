@@ -60,7 +60,9 @@ function NavLink({
       <Icon
         className={cn(
           'h-4 w-4 shrink-0 transition-colors',
-          isActive ? 'text-primary' : 'text-sidebar-foreground/50 group-hover:text-sidebar-foreground'
+          isActive
+            ? 'text-primary'
+            : 'text-sidebar-foreground/50 group-hover:text-sidebar-foreground'
         )}
       />
       {!collapsed && <span className="flex-1 truncate">{label}</span>}
@@ -89,9 +91,7 @@ export function Sidebar() {
   const userNavGroups: NavGroup[] = [
     {
       label: 'Overview',
-      items: [
-        { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-      ],
+      items: [{ href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, exact: true }],
     },
     {
       label: 'Workspace',
@@ -132,7 +132,9 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="flex h-16 shrink-0 items-center border-b px-3">
-        <div className={cn('flex items-center gap-3 overflow-hidden', collapsed && 'justify-center')}>
+        <div
+          className={cn('flex items-center gap-3 overflow-hidden', collapsed && 'justify-center')}
+        >
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary shadow-sm">
             <Zap className="h-4 w-4 text-primary-foreground" />
           </div>
@@ -141,9 +143,7 @@ export function Sidebar() {
               <p className="truncate text-sm font-semibold tracking-tight">
                 {process.env.NEXT_PUBLIC_APP_NAME ?? 'SaaS App'}
               </p>
-              {isSuperAdmin && (
-                <p className="text-[10px] font-medium text-primary">Super Admin</p>
-              )}
+              {isSuperAdmin && <p className="text-[10px] font-medium text-primary">Super Admin</p>}
             </div>
           )}
         </div>
@@ -184,10 +184,13 @@ export function Sidebar() {
             className="flex items-center gap-2.5 rounded-lg px-3 py-2 transition-colors hover:bg-sidebar-accent/60"
           >
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-              {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+              {user.firstName.charAt(0)}
+              {user.lastName.charAt(0)}
             </div>
             <div className="min-w-0">
-              <p className="truncate text-xs font-medium">{user.firstName} {user.lastName}</p>
+              <p className="truncate text-xs font-medium">
+                {user.firstName} {user.lastName}
+              </p>
               <p className="truncate text-[10px] text-muted-foreground">{user.email}</p>
             </div>
           </Link>
@@ -202,11 +205,7 @@ export function Sidebar() {
         className="absolute -right-3 top-[72px] z-10 h-6 w-6 rounded-full border bg-background shadow-sm hover:bg-accent"
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
-        {collapsed ? (
-          <ChevronRight className="h-3 w-3" />
-        ) : (
-          <ChevronLeft className="h-3 w-3" />
-        )}
+        {collapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
       </Button>
     </aside>
   );

@@ -53,9 +53,7 @@ export function StatCard({
                   {Math.abs(trend)}%
                 </span>
               )}
-              {description && (
-                <p className="text-xs text-muted-foreground">{description}</p>
-              )}
+              {description && <p className="text-xs text-muted-foreground">{description}</p>}
             </div>
           </>
         )}

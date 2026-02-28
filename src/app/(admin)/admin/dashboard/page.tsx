@@ -14,11 +14,16 @@ import { cn } from '@/lib/utils/cn';
 
 function subStatusColor(status: string) {
   switch (status?.toUpperCase()) {
-    case 'ACTIVE': return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400';
-    case 'TRIALING': return 'bg-blue-500/15 text-blue-600 dark:text-blue-400';
-    case 'PAST_DUE': return 'bg-amber-500/15 text-amber-600 dark:text-amber-400';
-    case 'CANCELED': return 'bg-red-500/15 text-red-600 dark:text-red-400';
-    default: return 'bg-muted text-muted-foreground';
+    case 'ACTIVE':
+      return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400';
+    case 'TRIALING':
+      return 'bg-blue-500/15 text-blue-600 dark:text-blue-400';
+    case 'PAST_DUE':
+      return 'bg-amber-500/15 text-amber-600 dark:text-amber-400';
+    case 'CANCELED':
+      return 'bg-red-500/15 text-red-600 dark:text-red-400';
+    default:
+      return 'bg-muted text-muted-foreground';
   }
 }
 
@@ -29,16 +34,12 @@ export default function AdminDashboardPage() {
   const totalCompanies = companiesData?.total ?? 0;
   const totalSubs = subsData?.total ?? 0;
 
-  const activeCount = subsData?.data?.filter(
-    (s) => s.status === 'ACTIVE' || s.status === 'TRIALING'
-  ).length ?? 0;
+  const activeCount =
+    subsData?.data?.filter((s) => s.status === 'ACTIVE' || s.status === 'TRIALING').length ?? 0;
 
   return (
     <div className="space-y-8">
-      <PageHeader
-        title="Admin Overview"
-        description="Platform-wide metrics and management."
-      >
+      <PageHeader title="Admin Overview" description="Platform-wide metrics and management.">
         <div className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5">
           <ShieldCheck className="h-3.5 w-3.5 text-primary" />
           <span className="text-xs font-semibold text-primary">Super Admin</span>
@@ -68,7 +69,9 @@ export default function AdminDashboardPage() {
         />
         <StatCard
           title="At Risk"
-          value={subsLoading ? '—' : (subsData?.data?.filter((s) => s.status === 'PAST_DUE').length ?? 0)}
+          value={
+            subsLoading ? '—' : (subsData?.data?.filter((s) => s.status === 'PAST_DUE').length ?? 0)
+          }
           description="past due"
           icon={Users}
           isLoading={subsLoading}
@@ -119,7 +122,9 @@ export default function AdminDashboardPage() {
                     {formatDate(co.createdAt)}
                   </p>
                   {co.deletedAt && (
-                    <Badge variant="destructive" className="shrink-0 text-[10px]">Deleted</Badge>
+                    <Badge variant="destructive" className="shrink-0 text-[10px]">
+                      Deleted
+                    </Badge>
                   )}
                 </Link>
               ))
@@ -145,7 +150,10 @@ export default function AdminDashboardPage() {
           <CardContent className="p-0">
             {subsLoading ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex items-center justify-between border-b px-6 py-3.5 last:border-0">
+                <div
+                  key={i}
+                  className="flex items-center justify-between border-b px-6 py-3.5 last:border-0"
+                >
                   <div className="space-y-1">
                     <Skeleton className="h-4 w-28" />
                     <Skeleton className="h-3 w-20" />

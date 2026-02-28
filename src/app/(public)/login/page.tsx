@@ -14,9 +14,7 @@ export default function LoginPage() {
             <Zap className="h-6 w-6 text-primary-foreground" />
           </div>
           <h1 className="mt-4 text-2xl font-bold tracking-tight">Welcome back</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Sign in to your account to continue
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">Sign in to your account to continue</p>
         </div>
 
         {/* Form card */}

@@ -10,7 +10,12 @@ export const fileKeys = {
   detail: (id: string) => [...fileKeys.all, id] as const,
 };
 
-export function useFiles(params?: { resourceType?: string; resourceId?: string; page?: number; limit?: number }) {
+export function useFiles(params?: {
+  resourceType?: string;
+  resourceId?: string;
+  page?: number;
+  limit?: number;
+}) {
   return useQuery({
     queryKey: fileKeys.list(params),
     queryFn: () => filesApi.getAll(params).then((r) => r.data),
@@ -28,8 +33,15 @@ export function useFile(id: string) {
 export function useUploadFile() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ file, resourceType, resourceId }: { file: File; resourceType?: string; resourceId?: string }) =>
-      filesApi.upload(file, resourceType, resourceId).then((r) => r.data),
+    mutationFn: ({
+      file,
+      resourceType,
+      resourceId,
+    }: {
+      file: File;
+      resourceType?: string;
+      resourceId?: string;
+    }) => filesApi.upload(file, resourceType, resourceId).then((r) => r.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: fileKeys.all });
       toast.success('File uploaded.');

@@ -21,19 +21,20 @@ import { cn } from '@/lib/utils/cn';
 
 function subStatusColor(status: string) {
   switch (status?.toUpperCase()) {
-    case 'ACTIVE': return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400';
-    case 'TRIALING': return 'bg-blue-500/15 text-blue-600 dark:text-blue-400';
-    case 'PAST_DUE': return 'bg-amber-500/15 text-amber-600 dark:text-amber-400';
-    case 'CANCELED': return 'bg-red-500/15 text-red-600 dark:text-red-400';
-    default: return 'bg-muted text-muted-foreground';
+    case 'ACTIVE':
+      return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400';
+    case 'TRIALING':
+      return 'bg-blue-500/15 text-blue-600 dark:text-blue-400';
+    case 'PAST_DUE':
+      return 'bg-amber-500/15 text-amber-600 dark:text-amber-400';
+    case 'CANCELED':
+      return 'bg-red-500/15 text-red-600 dark:text-red-400';
+    default:
+      return 'bg-muted text-muted-foreground';
   }
 }
 
-export default function AdminCompanyDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function AdminCompanyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [actionOpen, setActionOpen] = useState(false);
   const { data: company, isLoading } = useAdminCompany(id);
@@ -95,7 +96,9 @@ export default function AdminCompanyDetailPage({
               <div>
                 <p className="text-xs text-muted-foreground">Status</p>
                 <div className="mt-0.5 flex items-center gap-1.5">
-                  <span className={`h-1.5 w-1.5 rounded-full ${isDeleted ? 'bg-red-500' : 'bg-emerald-500'}`} />
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${isDeleted ? 'bg-red-500' : 'bg-emerald-500'}`}
+                  />
                   <span>{isDeleted ? 'Deactivated' : 'Active'}</span>
                 </div>
               </div>
@@ -109,9 +112,7 @@ export default function AdminCompanyDetailPage({
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Stripe Customer</p>
-                <p className="mt-0.5 font-mono text-xs">
-                  {company?.stripeCustomerId ?? '—'}
-                </p>
+                <p className="mt-0.5 font-mono text-xs">{company?.stripeCustomerId ?? '—'}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Created</p>
@@ -138,8 +139,15 @@ export default function AdminCompanyDetailPage({
               {company?.subscription ? (
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">{company.subscription.plan?.name ?? 'Unknown'}</span>
-                    <span className={cn('rounded-full px-2 py-0.5 text-xs font-medium', subStatusColor(company.subscription.status))}>
+                    <span className="font-semibold">
+                      {company.subscription.plan?.name ?? 'Unknown'}
+                    </span>
+                    <span
+                      className={cn(
+                        'rounded-full px-2 py-0.5 text-xs font-medium',
+                        subStatusColor(company.subscription.status)
+                      )}
+                    >
                       {company.subscription.status}
                     </span>
                   </div>
@@ -152,11 +160,15 @@ export default function AdminCompanyDetailPage({
                   <div className="grid grid-cols-2 gap-2 rounded-lg bg-muted/40 p-3">
                     <div>
                       <p className="text-xs text-muted-foreground">Start</p>
-                      <p className="text-xs font-medium">{formatDate(company.subscription.currentPeriodStart)}</p>
+                      <p className="text-xs font-medium">
+                        {formatDate(company.subscription.currentPeriodStart)}
+                      </p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">End</p>
-                      <p className="text-xs font-medium">{formatDate(company.subscription.currentPeriodEnd)}</p>
+                      <p className="text-xs font-medium">
+                        {formatDate(company.subscription.currentPeriodEnd)}
+                      </p>
                     </div>
                   </div>
                   {company.subscription.cancelAtPeriodEnd && (
@@ -186,17 +198,25 @@ export default function AdminCompanyDetailPage({
             <CardContent className="p-0">
               {company?.users?.length ? (
                 company.users.slice(0, 8).map((u) => (
-                  <div key={u.id} className="flex items-center gap-3 border-b px-6 py-3 last:border-0">
+                  <div
+                    key={u.id}
+                    className="flex items-center gap-3 border-b px-6 py-3 last:border-0"
+                  >
                     <Avatar className="h-7 w-7">
                       <AvatarFallback className="bg-primary/10 text-[10px] font-semibold text-primary">
                         {formatInitials(u.firstName, u.lastName)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-xs font-medium">{u.firstName} {u.lastName}</p>
+                      <p className="truncate text-xs font-medium">
+                        {u.firstName} {u.lastName}
+                      </p>
                       <p className="truncate text-[10px] text-muted-foreground">{u.email}</p>
                     </div>
-                    <Badge variant={u.role === 'ADMIN' ? 'default' : 'secondary'} className="shrink-0 text-[10px]">
+                    <Badge
+                      variant={u.role === 'ADMIN' ? 'default' : 'secondary'}
+                      className="shrink-0 text-[10px]"
+                    >
                       {u.role.toLowerCase()}
                     </Badge>
                   </div>

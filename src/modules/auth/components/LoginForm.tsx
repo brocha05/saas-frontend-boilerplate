@@ -38,9 +38,7 @@ export function LoginForm() {
           className={cn(errors.email && 'border-destructive')}
           {...register('email')}
         />
-        {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
-        )}
+        {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -71,9 +69,7 @@ export function LoginForm() {
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
-        {errors.password && (
-          <p className="text-sm text-destructive">{errors.password.message}</p>
-        )}
+        {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
       </div>
 
       <Button type="submit" className="w-full" disabled={isPending}>
@@ -83,7 +79,10 @@ export function LoginForm() {
 
       <p className="text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{' '}
-        <Link href="/register" className="font-medium text-primary underline-offset-4 hover:underline">
+        <Link
+          href="/register"
+          className="font-medium text-primary underline-offset-4 hover:underline"
+        >
           Sign up
         </Link>
       </p>

@@ -37,7 +37,11 @@ export default function AcceptInvitePage() {
   const [show, setShow] = useState(false);
   const { mutate, isPending } = useAcceptInvite();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
@@ -48,7 +52,9 @@ export default function AcceptInvitePage() {
           <CardContent className="py-8 text-center">
             <p className="text-sm text-muted-foreground">
               Invalid invitation link.{' '}
-              <Link href="/login" className="text-primary underline">Sign in instead</Link>
+              <Link href="/login" className="text-primary underline">
+                Sign in instead
+              </Link>
             </p>
           </CardContent>
         </Card>
@@ -73,7 +79,12 @@ export default function AcceptInvitePage() {
           <CardContent>
             <form
               onSubmit={handleSubmit((d) =>
-                mutate({ token, firstName: d.firstName, lastName: d.lastName, password: d.password })
+                mutate({
+                  token,
+                  firstName: d.firstName,
+                  lastName: d.lastName,
+                  password: d.password,
+                })
               )}
               className="space-y-4"
             >

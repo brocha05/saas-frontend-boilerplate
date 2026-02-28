@@ -90,10 +90,7 @@ export function UserDropdown() {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem
-          onClick={logout}
-          className="text-destructive focus:text-destructive"
-        >
+        <DropdownMenuItem onClick={logout} className="text-destructive focus:text-destructive">
           <LogOut className="h-4 w-4" />
           Sign out
         </DropdownMenuItem>

@@ -41,10 +41,7 @@ export default function ProfileSettingsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Profile"
-        description="Update your personal information."
-      >
+      <PageHeader title="Profile" description="Update your personal information.">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/dashboard/settings">
             <ArrowLeft className="h-4 w-4" />

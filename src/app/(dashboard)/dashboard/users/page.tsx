@@ -6,7 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { UserPlus, MoreHorizontal, Mail, ShieldCheck, UserX } from 'lucide-react';
 import type { ColumnDef } from '@tanstack/react-table';
-import { useUsers, useDeleteUser, useCreateUser, useResendInvite, useUpdateUser } from '@/modules/users/hooks/useUsers';
+import {
+  useUsers,
+  useDeleteUser,
+  useCreateUser,
+  useResendInvite,
+  useUpdateUser,
+} from '@/modules/users/hooks/useUsers';
 import { usePagination } from '@/lib/hooks/usePagination';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { DataTable } from '@/components/shared/DataTable';
@@ -17,7 +23,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -45,7 +57,9 @@ function RoleBadge({ role }: { role: string }) {
     MEMBER: 'bg-muted text-muted-foreground',
   };
   return (
-    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${variants[role] ?? variants.MEMBER}`}>
+    <span
+      className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${variants[role] ?? variants.MEMBER}`}
+    >
       {role.charAt(0) + role.slice(1).toLowerCase()}
     </span>
   );
@@ -106,7 +120,9 @@ export default function UsersPage() {
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-medium text-sm">{u.firstName} {u.lastName}</p>
+              <p className="font-medium text-sm">
+                {u.firstName} {u.lastName}
+              </p>
               <p className="text-xs text-muted-foreground">{u.email}</p>
             </div>
           </div>
@@ -247,7 +263,12 @@ export default function UsersPage() {
 
           <div className="space-y-1.5">
             <Label htmlFor="inv-email">Email address</Label>
-            <Input id="inv-email" type="email" {...register('email')} placeholder="jane@company.com" />
+            <Input
+              id="inv-email"
+              type="email"
+              {...register('email')}
+              placeholder="jane@company.com"
+            />
             {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
           </div>
 

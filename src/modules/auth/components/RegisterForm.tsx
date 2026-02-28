@@ -52,9 +52,7 @@ export function RegisterForm() {
             className={cn(errors.lastName && 'border-destructive')}
             {...register('lastName')}
           />
-          {errors.lastName && (
-            <p className="text-sm text-destructive">{errors.lastName.message}</p>
-          )}
+          {errors.lastName && <p className="text-sm text-destructive">{errors.lastName.message}</p>}
         </div>
       </div>
 
@@ -68,9 +66,7 @@ export function RegisterForm() {
           className={cn(errors.email && 'border-destructive')}
           {...register('email')}
         />
-        {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
-        )}
+        {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -106,9 +102,7 @@ export function RegisterForm() {
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
-        {errors.password && (
-          <p className="text-sm text-destructive">{errors.password.message}</p>
-        )}
+        {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
       </div>
 
       <div className="space-y-2">

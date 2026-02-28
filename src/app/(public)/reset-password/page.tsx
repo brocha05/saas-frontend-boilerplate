@@ -35,7 +35,11 @@ export default function ResetPasswordPage() {
   const [show, setShow] = useState(false);
   const { mutate, isPending } = useResetPassword();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 

@@ -21,13 +21,7 @@ const plans = [
     name: 'Starter',
     price: 29,
     description: 'Great for small teams getting started.',
-    features: [
-      'Up to 10 users',
-      '1 company',
-      'Analytics',
-      'API access',
-      'Email support',
-    ],
+    features: ['Up to 10 users', '1 company', 'Analytics', 'API access', 'Email support'],
     cta: 'Start free trial',
     href: '/register',
     highlighted: false,
@@ -86,9 +80,7 @@ export default function PricingPage() {
             )}
           >
             {plan.highlighted && (
-              <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">
-                Most popular
-              </Badge>
+              <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most popular</Badge>
             )}
 
             <div className="mb-6">
@@ -100,9 +92,7 @@ export default function PricingPage() {
                 ) : (
                   <>
                     <span className="text-3xl font-bold">${plan.price}</span>
-                    {plan.price > 0 && (
-                      <span className="text-muted-foreground">/mo</span>
-                    )}
+                    {plan.price > 0 && <span className="text-muted-foreground">/mo</span>}
                   </>
                 )}
               </div>
@@ -117,11 +107,7 @@ export default function PricingPage() {
               ))}
             </ul>
 
-            <Button
-              className="w-full"
-              variant={plan.highlighted ? 'default' : 'outline'}
-              asChild
-            >
+            <Button className="w-full" variant={plan.highlighted ? 'default' : 'outline'} asChild>
               <Link href={plan.href}>{plan.cta}</Link>
             </Button>
           </div>
