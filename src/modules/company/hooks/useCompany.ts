@@ -3,8 +3,8 @@
 import { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { isAxiosError } from 'axios';
 import { companyApi } from '../api/companyApi';
+import { toastApiError } from '@/lib/utils/apiError';
 import { useCompanyStore } from '@/store/companyStore';
 import type { UpdateCompanyRequest, InviteUserRequest } from '../types/company.types';
 
@@ -74,11 +74,6 @@ export function useInviteUser() {
       queryClient.invalidateQueries({ queryKey: companyKeys.members() });
       toast.success('Invitation sent.');
     },
-    onError: (error: unknown) => {
-      const msg = isAxiosError<{ message: string }>(error)
-        ? error.response?.data?.message
-        : undefined;
-      toast.error(msg ?? 'Failed to send invitation.');
-    },
+    onError: (error: unknown) => toastApiError(error, 'Failed to send invitation.'),
   });
 }

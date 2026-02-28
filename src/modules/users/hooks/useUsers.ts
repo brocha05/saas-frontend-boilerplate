@@ -2,9 +2,9 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { isAxiosError } from 'axios';
 import { usersApi } from '../api/usersApi';
 import { authApi } from '@/modules/auth/api/authApi';
+import { toastApiError } from '@/lib/utils/apiError';
 import { useAuthStore } from '@/store/authStore';
 import type { CreateUserRequest, UpdateUserRequest, UsersQueryParams } from '../types/users.types';
 
@@ -65,12 +65,7 @@ export function useCreateUser() {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() });
       toast.success('User invited successfully.');
     },
-    onError: (error: unknown) => {
-      const msg = isAxiosError<{ message: string }>(error)
-        ? error.response?.data?.message
-        : undefined;
-      toast.error(msg ?? 'Failed to invite user.');
-    },
+    onError: (error: unknown) => toastApiError(error, 'Failed to invite user.'),
   });
 }
 

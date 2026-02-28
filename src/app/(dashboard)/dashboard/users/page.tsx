@@ -9,10 +9,10 @@ import type { ColumnDef } from '@tanstack/react-table';
 import {
   useUsers,
   useDeleteUser,
-  useCreateUser,
   useResendInvite,
   useUpdateUser,
 } from '@/modules/users/hooks/useUsers';
+import { useInviteUser } from '@/modules/company/hooks/useCompany';
 import { usePagination } from '@/lib/hooks/usePagination';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { DataTable } from '@/components/shared/DataTable';
@@ -44,8 +44,6 @@ import { useAuthStore } from '@/store/authStore';
 
 const inviteSchema = z.object({
   email: z.string().email('Valid email required'),
-  firstName: z.string().min(1, 'Required'),
-  lastName: z.string().min(1, 'Required'),
   role: z.enum(['ADMIN', 'MEMBER']),
 });
 type InviteForm = z.infer<typeof inviteSchema>;
@@ -80,7 +78,7 @@ export default function UsersPage() {
   });
 
   const { mutate: deleteUser, isPending: isDeleting } = useDeleteUser();
-  const { mutate: createUser, isPending: isCreating } = useCreateUser();
+  const { mutate: inviteUser, isPending: isInviting } = useInviteUser();
   const { mutate: resendInvite } = useResendInvite();
   const { mutate: updateUser } = useUpdateUser();
 
@@ -96,7 +94,7 @@ export default function UsersPage() {
   });
 
   function onInvite(data: InviteForm) {
-    createUser(data, {
+    inviteUser(data, {
       onSuccess: () => {
         setInviteOpen(false);
         resetForm();
@@ -244,23 +242,6 @@ export default function UsersPage() {
         description="They'll receive an email to join your workspace."
       >
         <form onSubmit={handleSubmit(onInvite)} className="space-y-4 py-2">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="inv-first">First name</Label>
-              <Input id="inv-first" {...register('firstName')} placeholder="Jane" />
-              {errors.firstName && (
-                <p className="text-xs text-destructive">{errors.firstName.message}</p>
-              )}
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="inv-last">Last name</Label>
-              <Input id="inv-last" {...register('lastName')} placeholder="Doe" />
-              {errors.lastName && (
-                <p className="text-xs text-destructive">{errors.lastName.message}</p>
-              )}
-            </div>
-          </div>
-
           <div className="space-y-1.5">
             <Label htmlFor="inv-email">Email address</Label>
             <Input
@@ -292,8 +273,8 @@ export default function UsersPage() {
             <Button type="button" variant="outline" onClick={() => setInviteOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isCreating}>
-              {isCreating ? 'Sending...' : 'Send invitation'}
+            <Button type="submit" disabled={isInviting}>
+              {isInviting ? 'Sending...' : 'Send invitation'}
             </Button>
           </div>
         </form>
