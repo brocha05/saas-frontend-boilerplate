@@ -43,7 +43,7 @@ export default function SecuritySettingsPage() {
   const [showNew, setShowNew] = useState(false);
 
   const { mutate: changePw, isPending } = useChangePassword();
-  const { logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const router = useRouter();
 
   const {
@@ -67,7 +67,7 @@ export default function SecuritySettingsPage() {
     }
     setDeleting(true);
     try {
-      await usersApi.deleteMe(deletePassword);
+      await usersApi.remove(user!.id);
       logout();
       router.push('/login');
       toast.success('Account deleted.');

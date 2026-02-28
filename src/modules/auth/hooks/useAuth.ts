@@ -1,13 +1,13 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { isAxiosError } from 'axios';
 import { authApi } from '../api/authApi';
 import { useAuthStore } from '@/store/authStore';
-import type { LoginRequest, RegisterRequest } from '../types/auth.types';
+import type { AuthResponse, LoginRequest, RegisterRequest } from '../types/auth.types';
 
 // ─── Query Keys ──────────────────────────────────────────────────────────────
 
@@ -46,7 +46,7 @@ export function useLogin() {
     mutationFn: async (credentials: LoginRequest) => {
       const r = await authApi.login(credentials);
       // The axios interceptor already unwraps { success, data, meta } → data
-      return r.data as any;
+      return r.data as AuthResponse;
     },
     onSuccess: (data) => {
       setAuth(data.user, data.tokens.accessToken, data.tokens.refreshToken, data.company);
@@ -86,7 +86,7 @@ export function useRegister() {
   return useMutation({
     mutationFn: async (credentials: RegisterRequest) => {
       const r = await authApi.register(credentials);
-      return r.data as any;
+      return r.data as AuthResponse;
     },
     onSuccess: (data) => {
       setAuth(data.user, data.tokens.accessToken, data.tokens.refreshToken, data.company);
@@ -108,12 +108,17 @@ export function useRegister() {
 export function useCurrentUser() {
   const { isAuthenticated, setUser } = useAuthStore();
 
-  return useQuery({
+  const query = useQuery({
     queryKey: authKeys.me,
     queryFn: () => authApi.getMe().then((r) => r.data),
     enabled: isAuthenticated,
-    onSuccess: (user: import('@/types').User) => setUser(user),
-  } as Parameters<typeof useQuery>[0]);
+  });
+
+  useEffect(() => {
+    if (query.data) setUser(query.data);
+  }, [query.data, setUser]);
+
+  return query;
 }
 
 // ─── useChangePassword ────────────────────────────────────────────────────────
@@ -181,7 +186,7 @@ export function useAcceptInvite() {
         data.lastName,
         data.password
       );
-      return r.data as any;
+      return r.data as AuthResponse;
     },
     onSuccess: (data) => {
       setAuth(data.user, data.tokens.accessToken, data.tokens.refreshToken, data.company);

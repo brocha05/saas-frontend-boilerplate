@@ -2,7 +2,9 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { isAxiosError } from 'axios';
 import { usersApi } from '../api/usersApi';
+import { authApi } from '@/modules/auth/api/authApi';
 import { useAuthStore } from '@/store/authStore';
 import type { CreateUserRequest, UpdateUserRequest, UsersQueryParams } from '../types/users.types';
 
@@ -19,20 +21,20 @@ export function useMe() {
   const { isAuthenticated } = useAuthStore();
   return useQuery({
     queryKey: userKeys.me(),
-    queryFn: () => usersApi.getMe().then((r) => r.data),
+    queryFn: () => authApi.getMe().then((r) => r.data),
     enabled: isAuthenticated,
   });
 }
 
 export function useUpdateMe() {
   const queryClient = useQueryClient();
-  const { setUser } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   return useMutation({
     mutationFn: (data: { firstName?: string; lastName?: string }) =>
-      usersApi.updateMe(data).then((r) => r.data),
-    onSuccess: (user) => {
-      queryClient.setQueryData(userKeys.me(), user);
-      setUser(user);
+      usersApi.update(user!.id, data).then((r) => r.data),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(userKeys.me(), updated);
+      setUser(updated);
       toast.success('Profile updated.');
     },
     onError: () => toast.error('Failed to update profile.'),
@@ -63,8 +65,10 @@ export function useCreateUser() {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() });
       toast.success('User invited successfully.');
     },
-    onError: (error: any) => {
-      const msg = error?.response?.data?.message;
+    onError: (error: unknown) => {
+      const msg = isAxiosError<{ message: string }>(error)
+        ? error.response?.data?.message
+        : undefined;
       toast.error(msg ?? 'Failed to invite user.');
     },
   });

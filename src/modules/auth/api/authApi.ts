@@ -26,8 +26,4 @@ export const authApi = {
 
   acceptInvite: (token: string, firstName: string, lastName: string, password: string) =>
     apiClient.post<AuthResponse>('/auth/accept-invite', { token, firstName, lastName, password }),
-
-  confirmEmail: (token: string) => apiClient.post<void>('/auth/confirm-email', { token }),
-
-  resendConfirmation: () => apiClient.post<void>('/auth/resend-confirmation'),
 };

@@ -81,7 +81,7 @@ export default function CompanyPage() {
                 <Building2 className="h-4 w-4" />
                 Company Profile
               </CardTitle>
-              <CardDescription>Update your company's name and logo.</CardDescription>
+              <CardDescription>Update your company&apos;s name and logo.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Logo */}

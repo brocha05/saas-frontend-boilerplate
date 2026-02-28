@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Building2, MoreHorizontal, Power, PowerOff, ExternalLink } from 'lucide-react';
+import { MoreHorizontal, Power, PowerOff, ExternalLink } from 'lucide-react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable } from '@/components/shared/DataTable';

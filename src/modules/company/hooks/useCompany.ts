@@ -1,7 +1,9 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { isAxiosError } from 'axios';
 import { companyApi } from '../api/companyApi';
 import { useCompanyStore } from '@/store/companyStore';
 import type { UpdateCompanyRequest, InviteUserRequest } from '../types/company.types';
@@ -14,11 +16,17 @@ export const companyKeys = {
 
 export function useCurrentCompany() {
   const { setCurrentCompany } = useCompanyStore();
-  return useQuery({
+
+  const query = useQuery({
     queryKey: companyKeys.current(),
     queryFn: () => companyApi.getCurrent().then((r) => r.data),
-    onSuccess: (company: import('@/types').Company) => setCurrentCompany(company),
-  } as Parameters<typeof useQuery>[0]);
+  });
+
+  useEffect(() => {
+    if (query.data) setCurrentCompany(query.data);
+  }, [query.data, setCurrentCompany]);
+
+  return query;
 }
 
 export function useUpdateCompany() {
@@ -66,8 +74,10 @@ export function useInviteUser() {
       queryClient.invalidateQueries({ queryKey: companyKeys.members() });
       toast.success('Invitation sent.');
     },
-    onError: (error: any) => {
-      const msg = error?.response?.data?.message;
+    onError: (error: unknown) => {
+      const msg = isAxiosError<{ message: string }>(error)
+        ? error.response?.data?.message
+        : undefined;
       toast.error(msg ?? 'Failed to send invitation.');
     },
   });
