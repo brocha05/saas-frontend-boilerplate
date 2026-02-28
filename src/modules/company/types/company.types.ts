@@ -1,13 +1,12 @@
-import type { Company } from '@/types';
+import type { Company, UserRole } from '@/types';
 
 export type { Company };
 
 export interface UpdateCompanyRequest {
   name?: string;
-  logo?: string;
 }
 
-export interface InviteMemberRequest {
+export interface InviteUserRequest {
   email: string;
-  role: 'admin' | 'member';
+  role: Extract<UserRole, 'ADMIN' | 'MEMBER'>;
 }

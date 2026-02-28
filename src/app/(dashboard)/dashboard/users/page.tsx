@@ -1,9 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { UserPlus, MoreHorizontal, Mail } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { UserPlus, MoreHorizontal, Mail, ShieldCheck, UserX } from 'lucide-react';
 import type { ColumnDef } from '@tanstack/react-table';
-import { useUsers, useDeleteUser } from '@/modules/users/hooks/useUsers';
+import { useUsers, useDeleteUser, useCreateUser, useResendInvite, useUpdateUser } from '@/modules/users/hooks/useUsers';
 import { usePagination } from '@/lib/hooks/usePagination';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { DataTable } from '@/components/shared/DataTable';
@@ -12,7 +15,10 @@ import { Modal } from '@/components/shared/Modal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,37 +28,86 @@ import {
 } from '@/components/ui/dropdown-menu';
 import type { User } from '@/types';
 import { formatDate, formatInitials } from '@/lib/utils/formatters';
+import { useAuthStore } from '@/store/authStore';
+
+const inviteSchema = z.object({
+  email: z.string().email('Valid email required'),
+  firstName: z.string().min(1, 'Required'),
+  lastName: z.string().min(1, 'Required'),
+  role: z.enum(['ADMIN', 'MEMBER']),
+});
+type InviteForm = z.infer<typeof inviteSchema>;
+
+function RoleBadge({ role }: { role: string }) {
+  const variants: Record<string, string> = {
+    SUPER_ADMIN: 'bg-purple-500/15 text-purple-600 dark:text-purple-400',
+    ADMIN: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
+    MEMBER: 'bg-muted text-muted-foreground',
+  };
+  return (
+    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${variants[role] ?? variants.MEMBER}`}>
+      {role.charAt(0) + role.slice(1).toLowerCase()}
+    </span>
+  );
+}
 
 export default function UsersPage() {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const { user: me } = useAuthStore();
 
   const pagination = usePagination();
+  const debouncedSearch = useDebounce(pagination.search, 350);
 
   const { data, isLoading } = useUsers({
     page: pagination.page,
     limit: pagination.limit,
+    search: debouncedSearch || undefined,
   });
 
   const { mutate: deleteUser, isPending: isDeleting } = useDeleteUser();
+  const { mutate: createUser, isPending: isCreating } = useCreateUser();
+  const { mutate: resendInvite } = useResendInvite();
+  const { mutate: updateUser } = useUpdateUser();
+
+  const {
+    register,
+    handleSubmit,
+    reset: resetForm,
+    setValue,
+    formState: { errors },
+  } = useForm<InviteForm>({
+    resolver: zodResolver(inviteSchema),
+    defaultValues: { role: 'MEMBER' },
+  });
+
+  function onInvite(data: InviteForm) {
+    createUser(data, {
+      onSuccess: () => {
+        setInviteOpen(false);
+        resetForm();
+      },
+    });
+  }
+
+  const isAdmin = me?.role === 'ADMIN' || me?.role === 'SUPER_ADMIN';
 
   const columns: ColumnDef<User>[] = [
     {
       id: 'user',
       header: 'User',
       cell: ({ row }) => {
-        const user = row.original;
+        const u = row.original;
         return (
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={user.avatar} />
-              <AvatarFallback className="text-xs">
-                {formatInitials(user.firstName, user.lastName)}
+              <AvatarFallback className="text-xs bg-primary/10 text-primary font-semibold">
+                {formatInitials(u.firstName, u.lastName)}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-medium">{`${user.firstName} ${user.lastName}`}</p>
-              <p className="text-xs text-muted-foreground">{user.email}</p>
+              <p className="font-medium text-sm">{u.firstName} {u.lastName}</p>
+              <p className="text-xs text-muted-foreground">{u.email}</p>
             </div>
           </div>
         );
@@ -61,21 +116,28 @@ export default function UsersPage() {
     {
       accessorKey: 'role',
       header: 'Role',
-      cell: ({ getValue }) => {
-        const role = getValue<string>();
-        return (
-          <Badge variant={role === 'owner' ? 'default' : 'secondary'} className="capitalize">
-            {role}
-          </Badge>
-        );
-      },
+      cell: ({ getValue }) => <RoleBadge role={getValue<string>()} />,
     },
     {
       accessorKey: 'isActive',
       header: 'Status',
       cell: ({ getValue }) => (
-        <Badge variant={getValue<boolean>() ? 'success' : 'secondary'}>
-          {getValue<boolean>() ? 'Active' : 'Inactive'}
+        <div className="flex items-center gap-1.5">
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${getValue<boolean>() ? 'bg-emerald-500' : 'bg-muted-foreground/40'}`}
+          />
+          <span className="text-sm text-muted-foreground">
+            {getValue<boolean>() ? 'Active' : 'Inactive'}
+          </span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'emailVerified',
+      header: 'Verified',
+      cell: ({ getValue }) => (
+        <Badge variant={getValue<boolean>() ? 'default' : 'secondary'} className="text-xs">
+          {getValue<boolean>() ? 'Verified' : 'Pending'}
         </Badge>
       ),
     },
@@ -83,45 +145,62 @@ export default function UsersPage() {
       accessorKey: 'createdAt',
       header: 'Joined',
       cell: ({ getValue }) => (
-        <span className="text-muted-foreground">{formatDate(getValue<string>())}</span>
+        <span className="text-sm text-muted-foreground">{formatDate(getValue<string>())}</span>
       ),
     },
     {
       id: 'actions',
       header: '',
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Mail className="h-4 w-4" />
-              Resend invite
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive"
-              onClick={() => setDeleteId(row.original.id)}
-            >
-              Remove user
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
+      cell: ({ row }) => {
+        const u = row.original;
+        if (!isAdmin || u.id === me?.id) return null;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreHorizontal className="h-4 w-4" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {!u.emailVerified && (
+                <DropdownMenuItem onClick={() => resendInvite(u.id)}>
+                  <Mail className="h-4 w-4" />
+                  Resend invite
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem
+                onClick={() =>
+                  updateUser({ id: u.id, data: { role: u.role === 'ADMIN' ? 'MEMBER' : 'ADMIN' } })
+                }
+              >
+                <ShieldCheck className="h-4 w-4" />
+                Make {u.role === 'ADMIN' ? 'member' : 'admin'}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive"
+                onClick={() => setDeleteId(u.id)}
+              >
+                <UserX className="h-4 w-4" />
+                Remove user
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
     },
   ];
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Users" description="Manage team members and their permissions.">
-        <Button onClick={() => setInviteOpen(true)}>
-          <UserPlus className="h-4 w-4" />
-          Invite user
-        </Button>
+      <PageHeader title="Users" description="Manage your team members and their permissions.">
+        {isAdmin && (
+          <Button onClick={() => setInviteOpen(true)}>
+            <UserPlus className="h-4 w-4" />
+            Invite user
+          </Button>
+        )}
       </PageHeader>
 
       <DataTable
@@ -133,25 +212,70 @@ export default function UsersPage() {
         onPageChange={pagination.setPage}
         searchValue={pagination.search}
         onSearchChange={pagination.setSearch}
-        searchPlaceholder="Search users..."
+        searchPlaceholder="Search by name or email..."
+        toolbar={
+          <span className="text-sm text-muted-foreground">
+            {data?.total ?? 0} member{data?.total !== 1 ? 's' : ''}
+          </span>
+        }
       />
 
       {/* Invite modal */}
       <Modal
         open={inviteOpen}
         onOpenChange={setInviteOpen}
-        title="Invite user"
-        description="Send an invitation to a new team member."
+        title="Invite team member"
+        description="They'll receive an email to join your workspace."
       >
-        <p className="text-sm text-muted-foreground py-4">
-          Invite form component — wire to useCreateUser() hook.
-        </p>
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => setInviteOpen(false)}>
-            Cancel
-          </Button>
-          <Button>Send invite</Button>
-        </div>
+        <form onSubmit={handleSubmit(onInvite)} className="space-y-4 py-2">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="inv-first">First name</Label>
+              <Input id="inv-first" {...register('firstName')} placeholder="Jane" />
+              {errors.firstName && (
+                <p className="text-xs text-destructive">{errors.firstName.message}</p>
+              )}
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="inv-last">Last name</Label>
+              <Input id="inv-last" {...register('lastName')} placeholder="Doe" />
+              {errors.lastName && (
+                <p className="text-xs text-destructive">{errors.lastName.message}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="inv-email">Email address</Label>
+            <Input id="inv-email" type="email" {...register('email')} placeholder="jane@company.com" />
+            {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="inv-role">Role</Label>
+            <Select
+              defaultValue="MEMBER"
+              onValueChange={(v) => setValue('role', v as 'ADMIN' | 'MEMBER')}
+            >
+              <SelectTrigger id="inv-role">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="MEMBER">Member — can view and use the workspace</SelectItem>
+                <SelectItem value="ADMIN">Admin — full management access</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2">
+            <Button type="button" variant="outline" onClick={() => setInviteOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isCreating}>
+              {isCreating ? 'Sending...' : 'Send invitation'}
+            </Button>
+          </div>
+        </form>
       </Modal>
 
       {/* Delete confirm */}
@@ -159,14 +283,12 @@ export default function UsersPage() {
         open={!!deleteId}
         onOpenChange={(o) => !o && setDeleteId(null)}
         title="Remove user"
-        description="This user will lose access to the company. This action cannot be undone."
+        description="This user will lose access immediately. This action cannot be undone."
         confirmLabel="Remove"
         variant="destructive"
         isLoading={isDeleting}
         onConfirm={() => {
-          if (deleteId) {
-            deleteUser(deleteId, { onSuccess: () => setDeleteId(null) });
-          }
+          if (deleteId) deleteUser(deleteId, { onSuccess: () => setDeleteId(null) });
         }}
       />
     </div>

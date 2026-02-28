@@ -55,12 +55,12 @@ const processQueue = (error: unknown, token: string | null = null) => {
 
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
-    // Unwrap backend's TransformInterceptor envelope: { data: T, timestamp: string }
+    // Unwrap backend's ResponseInterceptor envelope: { success: true, data: T, meta: {...} }
     if (
       response.data !== null &&
       typeof response.data === 'object' &&
-      'data' in response.data &&
-      'timestamp' in response.data
+      response.data.success === true &&
+      'data' in response.data
     ) {
       response.data = response.data.data;
     }

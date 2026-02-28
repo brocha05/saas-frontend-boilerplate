@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const PUBLIC_ROUTES = ['/login', '/register', '/pricing'];
+const PUBLIC_ROUTES = ['/login', '/register', '/pricing', '/forgot-password', '/reset-password', '/accept-invite'];
 const AUTH_ROUTES = ['/login', '/register'];
-const DASHBOARD_PREFIX = '/dashboard';
+const PROTECTED_PREFIXES = ['/dashboard', '/admin'];
 
 function getTokenFromRequest(request: NextRequest): string | null {
-  // Next.js middleware cannot access localStorage — token stored in cookie for SSR/middleware
   return request.cookies.get('access-token')?.value ?? null;
 }
 
@@ -17,7 +16,7 @@ export function proxy(request: NextRequest) {
 
   const isPublicRoute = PUBLIC_ROUTES.some((r) => pathname.startsWith(r));
   const isAuthRoute = AUTH_ROUTES.some((r) => pathname.startsWith(r));
-  const isDashboardRoute = pathname.startsWith(DASHBOARD_PREFIX) || pathname === '/';
+  const isProtectedRoute = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p)) || pathname === '/';
 
   // Redirect authenticated users away from auth pages
   if (isAuthRoute && token) {
@@ -25,7 +24,7 @@ export function proxy(request: NextRequest) {
   }
 
   // Redirect unauthenticated users to login
-  if (isDashboardRoute && !isPublicRoute && !token) {
+  if (isProtectedRoute && !isPublicRoute && !token) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(loginUrl);
@@ -36,12 +35,6 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static, _next/image (static files)
-     * - favicon.ico, public folder
-     * - API routes
-     */
     '/((?!_next/static|_next/image|favicon.ico|public|api).*)',
   ],
 };

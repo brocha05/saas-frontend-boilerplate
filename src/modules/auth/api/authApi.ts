@@ -21,4 +21,16 @@ export const authApi = {
 
   resetPassword: (token: string, password: string) =>
     apiClient.post<void>('/auth/reset-password', { token, password }),
+
+  changePassword: (currentPassword: string, newPassword: string) =>
+    apiClient.post<void>('/auth/change-password', { currentPassword, newPassword }),
+
+  acceptInvite: (token: string, firstName: string, lastName: string, password: string) =>
+    apiClient.post<AuthResponse>('/auth/accept-invite', { token, firstName, lastName, password }),
+
+  confirmEmail: (token: string) =>
+    apiClient.post<void>('/auth/confirm-email', { token }),
+
+  resendConfirmation: () =>
+    apiClient.post<void>('/auth/resend-confirmation'),
 };

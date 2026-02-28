@@ -3,15 +3,41 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { usersApi } from '../api/usersApi';
+import { useAuthStore } from '@/store/authStore';
 import type { CreateUserRequest, UpdateUserRequest, UsersQueryParams } from '../types/users.types';
 
 export const userKeys = {
   all: ['users'] as const,
+  me: () => [...userKeys.all, 'me'] as const,
   lists: () => [...userKeys.all, 'list'] as const,
   list: (params: UsersQueryParams) => [...userKeys.lists(), params] as const,
   details: () => [...userKeys.all, 'detail'] as const,
   detail: (id: string) => [...userKeys.details(), id] as const,
 };
+
+export function useMe() {
+  const { isAuthenticated } = useAuthStore();
+  return useQuery({
+    queryKey: userKeys.me(),
+    queryFn: () => usersApi.getMe().then((r) => r.data),
+    enabled: isAuthenticated,
+  });
+}
+
+export function useUpdateMe() {
+  const queryClient = useQueryClient();
+  const { setUser } = useAuthStore();
+  return useMutation({
+    mutationFn: (data: { firstName?: string; lastName?: string }) =>
+      usersApi.updateMe(data).then((r) => r.data),
+    onSuccess: (user) => {
+      queryClient.setQueryData(userKeys.me(), user);
+      setUser(user);
+      toast.success('Profile updated.');
+    },
+    onError: () => toast.error('Failed to update profile.'),
+  });
+}
 
 export function useUsers(params?: UsersQueryParams) {
   return useQuery({
@@ -37,7 +63,10 @@ export function useCreateUser() {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() });
       toast.success('User invited successfully.');
     },
-    onError: () => toast.error('Failed to invite user.'),
+    onError: (error: any) => {
+      const msg = error?.response?.data?.message;
+      toast.error(msg ?? 'Failed to invite user.');
+    },
   });
 }
 
@@ -64,5 +93,13 @@ export function useDeleteUser() {
       toast.success('User removed.');
     },
     onError: () => toast.error('Failed to remove user.'),
+  });
+}
+
+export function useResendInvite() {
+  return useMutation({
+    mutationFn: (id: string) => usersApi.resendInvite(id),
+    onSuccess: () => toast.success('Invitation resent.'),
+    onError: () => toast.error('Failed to resend invitation.'),
   });
 }

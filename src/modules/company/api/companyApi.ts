@@ -1,6 +1,6 @@
 import apiClient from '@/lib/api/client';
-import type { Company } from '@/types';
-import type { UpdateCompanyRequest } from '../types/company.types';
+import type { Company, User } from '@/types';
+import type { UpdateCompanyRequest, InviteUserRequest } from '../types/company.types';
 
 export const companyApi = {
   getCurrent: () => apiClient.get<Company>('/companies/me'),
@@ -15,6 +15,14 @@ export const companyApi = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
+
+  getMembers: () => apiClient.get<User[]>('/companies/me/members'),
+
+  inviteUser: (data: InviteUserRequest) =>
+    apiClient.post<void>('/companies/me/invite', data),
+
+  changePlan: (planId: string) =>
+    apiClient.post<void>(`/companies/me/change-plan/${planId}`),
 
   delete: () => apiClient.delete<void>('/companies/me'),
 };

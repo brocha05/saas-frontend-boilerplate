@@ -31,7 +31,7 @@ export type PaginationParams = {
 
 // ─── User ─────────────────────────────────────────────────────────────────────
 
-export type UserRole = 'owner' | 'admin' | 'member';
+export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'MEMBER';
 
 export interface User {
   id: string;
@@ -42,98 +42,128 @@ export interface User {
   role: UserRole;
   companyId: string;
   isActive: boolean;
+  emailVerified: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
 // ─── Company ──────────────────────────────────────────────────────────────────
 
-export type PlanType = 'free' | 'starter' | 'pro' | 'enterprise';
-
 export interface Company {
   id: string;
   name: string;
   slug: string;
-  logo?: string;
-  plan?: PlanType;
-  ownerId: string;
-  membersCount: number;
+  logoUrl?: string;
+  stripeCustomerId?: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
+}
+
+export interface CompanyWithDetails extends Company {
+  users?: User[];
+  subscription?: Subscription;
+  _count?: { users: number };
+}
+
+// ─── Plan ─────────────────────────────────────────────────────────────────────
+
+export type PlanInterval = 'MONTH' | 'YEAR';
+
+export interface Plan {
+  id: string;
+  name: string;
+  slug: string;
+  stripePriceId: string;
+  stripeProductId: string;
+  interval: PlanInterval;
+  price: number; // in cents
+  currency: string;
+  isActive: boolean;
+  features: string[];
+  limits: Record<string, number>;
   createdAt: string;
   updatedAt: string;
 }
 
-
 // ─── Billing / Subscription ───────────────────────────────────────────────────
 
 export type SubscriptionStatus =
-  | 'active'
-  | 'past_due'
-  | 'canceled'
-  | 'trialing'
-  | 'incomplete';
+  | 'ACTIVE'
+  | 'PAST_DUE'
+  | 'CANCELED'
+  | 'TRIALING'
+  | 'INCOMPLETE'
+  | 'UNPAID';
 
 export interface Subscription {
   id: string;
   companyId: string;
-  plan: PlanType;
+  planId: string;
+  plan?: Plan;
+  stripeSubscriptionId: string;
   status: SubscriptionStatus;
   currentPeriodStart: string;
   currentPeriodEnd: string;
   cancelAtPeriodEnd: boolean;
-  stripeCustomerId: string;
-  stripeSubscriptionId: string;
+  canceledAt?: string;
+  trialStart?: string;
+  trialEnd?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface PlanFeatures {
-  maxUsers: number;
-  maxCompanies: number;
-  analytics: boolean;
-  apiAccess: boolean;
-  customDomain: boolean;
-  prioritySupport: boolean;
-  sso: boolean;
-  auditLogs: boolean;
+export interface Invoice {
+  id: string;
+  number: string;
+  status: string;
+  amount: number;
+  currency: string;
+  created: number;
+  hostedInvoiceUrl?: string;
+  invoicePdf?: string;
+  description?: string;
 }
 
-export const PLAN_FEATURES: Record<PlanType, PlanFeatures> = {
-  free: {
-    maxUsers: 3,
-    maxCompanies: 1,
-    analytics: false,
-    apiAccess: false,
-    customDomain: false,
-    prioritySupport: false,
-    sso: false,
-    auditLogs: false,
-  },
-  starter: {
-    maxUsers: 10,
-    maxCompanies: 1,
-    analytics: true,
-    apiAccess: true,
-    customDomain: false,
-    prioritySupport: false,
-    sso: false,
-    auditLogs: false,
-  },
-  pro: {
-    maxUsers: 50,
-    maxCompanies: 3,
-    analytics: true,
-    apiAccess: true,
-    customDomain: true,
-    prioritySupport: true,
-    sso: false,
-    auditLogs: true,
-  },
-  enterprise: {
-    maxUsers: Infinity,
-    maxCompanies: Infinity,
-    analytics: true,
-    apiAccess: true,
-    customDomain: true,
-    prioritySupport: true,
-    sso: true,
-    auditLogs: true,
-  },
-};
+
+// ─── Files ────────────────────────────────────────────────────────────────────
+
+export interface FileRecord {
+  id: string;
+  companyId: string;
+  uploadedById: string;
+  key: string;
+  bucket: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  resourceType?: string;
+  resourceId?: string;
+  createdAt: string;
+  updatedAt: string;
+  uploadedBy?: Pick<User, 'id' | 'firstName' | 'lastName' | 'email'>;
+}
+
+// ─── Usage ────────────────────────────────────────────────────────────────────
+
+export interface UsageStats {
+  users: { used: number; limit: number };
+  storage: { used: number; limit: number };
+  apiCalls: { used: number; limit: number };
+  period: { start: string; end: string };
+}
+
+// ─── Onboarding ───────────────────────────────────────────────────────────────
+
+export interface OnboardingStep {
+  step: string;
+  completed: boolean;
+  completedAt?: string;
+}
+
+export interface OnboardingStatus {
+  completed: boolean;
+  steps: OnboardingStep[];
+}
+
+

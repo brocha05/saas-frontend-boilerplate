@@ -1,8 +1,18 @@
 import apiClient from '@/lib/api/client';
-import type { PaginatedResponse } from '@/types';
-import type { User, CreateUserRequest, UpdateUserRequest, UsersQueryParams } from '../types/users.types';
+import type { PaginatedResponse, User } from '@/types';
+import type { CreateUserRequest, UpdateUserRequest, UsersQueryParams } from '../types/users.types';
 
 export const usersApi = {
+  // ─── Own profile ──────────────────────────────────────────────────────────
+  getMe: () => apiClient.get<User>('/users/me'),
+
+  updateMe: (data: { firstName?: string; lastName?: string }) =>
+    apiClient.patch<User>('/users/me', data),
+
+  deleteMe: (password: string) =>
+    apiClient.delete<void>('/users/me', { data: { password } }),
+
+  // ─── Admin user management ────────────────────────────────────────────────
   getAll: (params?: UsersQueryParams) =>
     apiClient.get<PaginatedResponse<User>>('/users', { params }),
 

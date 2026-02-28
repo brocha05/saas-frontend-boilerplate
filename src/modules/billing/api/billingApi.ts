@@ -1,13 +1,14 @@
 import apiClient from '@/lib/api/client';
+import type { Plan, Subscription, Invoice } from '@/types';
 import type {
-  Subscription,
   CheckoutSessionRequest,
   CheckoutSessionResponse,
   BillingPortalResponse,
-  Invoice,
 } from '../types/billing.types';
 
 export const billingApi = {
+  getPlans: () => apiClient.get<Plan[]>('/subscriptions/plans'),
+
   getSubscription: () => apiClient.get<Subscription>('/subscriptions'),
 
   getInvoices: () => apiClient.get<Invoice[]>('/subscriptions/invoices'),

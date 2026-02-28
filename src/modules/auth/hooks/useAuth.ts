@@ -45,24 +45,25 @@ export function useLogin() {
   return useMutation({
     mutationFn: async (credentials: LoginRequest) => {
       const r = await authApi.login(credentials);
-      // Handle TransformInterceptor envelope { data: T, timestamp } if not already unwrapped
-      const body = r.data as any;
-      return (body && 'timestamp' in body && 'data' in body) ? body.data : body;
+      // The axios interceptor already unwraps { success, data, meta } → data
+      return r.data as any;
     },
     onSuccess: (data) => {
       setAuth(data.user, data.tokens.accessToken, data.tokens.refreshToken, data.company);
       toast.success(`Welcome back, ${data.user.firstName}!`);
-      window.location.href = '/dashboard';
+      // Redirect based on role
+      if (data.user.role === 'SUPER_ADMIN') {
+        window.location.href = '/admin/dashboard';
+      } else {
+        window.location.href = '/dashboard';
+      }
     },
     onError: (error) => {
-      // Log full error to console so we can diagnose the real cause
       console.error('[useLogin] error:', error);
       if (isAxiosError(error)) {
-        console.error('[useLogin] response status:', error.response?.status);
-        console.error('[useLogin] response data:', error.response?.data);
         const status = error.response?.status;
         if (status === 0 || !error.response) {
-          toast.error('Cannot reach the server. Check NEXT_PUBLIC_API_URL and that the backend is running.');
+          toast.error('Cannot reach the server. Check that the backend is running.');
           return;
         }
         if (status === 401 || status === 400) {
@@ -72,8 +73,7 @@ export function useLogin() {
         toast.error(`Server error ${status}. Check the browser console for details.`);
         return;
       }
-      // Non-axios error — likely a JS error in onSuccess (e.g. wrong response shape)
-      toast.error(`Unexpected error: ${(error as Error).message}. Check the browser console.`);
+      toast.error(`Unexpected error: ${(error as Error).message}`);
     },
   });
 }
@@ -86,15 +86,18 @@ export function useRegister() {
   return useMutation({
     mutationFn: async (credentials: RegisterRequest) => {
       const r = await authApi.register(credentials);
-      const body = r.data as any;
-      return (body && 'timestamp' in body && 'data' in body) ? body.data : body;
+      return r.data as any;
     },
     onSuccess: (data) => {
       setAuth(data.user, data.tokens.accessToken, data.tokens.refreshToken, data.company);
       toast.success('Account created successfully!');
       window.location.href = '/dashboard';
     },
-    onError: () => {
+    onError: (error) => {
+      if (isAxiosError(error) && error.response?.status === 409) {
+        toast.error('An account with this email already exists.');
+        return;
+      }
       toast.error('Could not create account. Please try again.');
     },
   });
@@ -111,4 +114,70 @@ export function useCurrentUser() {
     enabled: isAuthenticated,
     onSuccess: (user: import('@/types').User) => setUser(user),
   } as Parameters<typeof useQuery>[0]);
+}
+
+// ─── useChangePassword ────────────────────────────────────────────────────────
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: ({ currentPassword, newPassword }: { currentPassword: string; newPassword: string }) =>
+      authApi.changePassword(currentPassword, newPassword),
+    onSuccess: () => toast.success('Password updated successfully.'),
+    onError: (error) => {
+      if (isAxiosError(error) && error.response?.status === 401) {
+        toast.error('Current password is incorrect.');
+        return;
+      }
+      toast.error('Failed to update password.');
+    },
+  });
+}
+
+// ─── useForgotPassword ────────────────────────────────────────────────────────
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (email: string) => authApi.forgotPassword(email),
+    onSuccess: () =>
+      toast.success("If that email exists, you'll receive reset instructions shortly."),
+    onError: () => toast.error('Failed to send reset email.'),
+  });
+}
+
+// ─── useResetPassword ─────────────────────────────────────────────────────────
+
+export function useResetPassword() {
+  const router = useRouter();
+  return useMutation({
+    mutationFn: ({ token, password }: { token: string; password: string }) =>
+      authApi.resetPassword(token, password),
+    onSuccess: () => {
+      toast.success('Password reset successfully. Please log in.');
+      router.push('/login');
+    },
+    onError: () => toast.error('Invalid or expired reset token.'),
+  });
+}
+
+// ─── useAcceptInvite ──────────────────────────────────────────────────────────
+
+export function useAcceptInvite() {
+  const { setAuth } = useAuthStore();
+  return useMutation({
+    mutationFn: async (data: {
+      token: string;
+      firstName: string;
+      lastName: string;
+      password: string;
+    }) => {
+      const r = await authApi.acceptInvite(data.token, data.firstName, data.lastName, data.password);
+      return r.data as any;
+    },
+    onSuccess: (data) => {
+      setAuth(data.user, data.tokens.accessToken, data.tokens.refreshToken, data.company);
+      toast.success('Welcome! Your account has been created.');
+      window.location.href = '/dashboard';
+    },
+    onError: () => toast.error('Invalid or expired invitation link.'),
+  });
 }

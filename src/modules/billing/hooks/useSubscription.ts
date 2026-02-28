@@ -3,55 +3,32 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { billingApi } from '../api/billingApi';
-import { useCompanyStore } from '@/store/companyStore';
-import { PLAN_FEATURES } from '@/types';
-import type { PlanFeatures, CheckoutSessionRequest } from '../types/billing.types';
+import type { CheckoutSessionRequest } from '../types/billing.types';
 
 export const billingKeys = {
   all: ['billing'] as const,
+  plans: () => [...billingKeys.all, 'plans'] as const,
   subscription: () => [...billingKeys.all, 'subscription'] as const,
   invoices: () => [...billingKeys.all, 'invoices'] as const,
 };
 
+// ─── usePlans ─────────────────────────────────────────────────────────────────
+
+export function usePlans() {
+  return useQuery({
+    queryKey: billingKeys.plans(),
+    queryFn: () => billingApi.getPlans().then((r) => r.data),
+    staleTime: 1000 * 60 * 10, // 10 min
+  });
+}
+
 // ─── useSubscription ─────────────────────────────────────────────────────────
 
 export function useSubscription() {
-  const { currentCompany } = useCompanyStore();
-
-  const query = useQuery({
+  return useQuery({
     queryKey: billingKeys.subscription(),
     queryFn: () => billingApi.getSubscription().then((r) => r.data),
-    enabled: !!currentCompany,
   });
-
-  const plan = currentCompany?.plan ?? 'free';
-  const features: PlanFeatures = PLAN_FEATURES[plan];
-
-  const hasFeature = (feature: keyof PlanFeatures): boolean => {
-    const value = features[feature];
-    if (typeof value === 'boolean') return value;
-    if (typeof value === 'number') return value > 0;
-    return false;
-  };
-
-  const canUse = (feature: keyof PlanFeatures, count?: number): boolean => {
-    const value = features[feature];
-    if (typeof value === 'boolean') return value;
-    if (typeof value === 'number') {
-      return count !== undefined ? value >= count : value > 0;
-    }
-    return false;
-  };
-
-  return {
-    ...query,
-    plan,
-    features,
-    hasFeature,
-    canUse,
-    isActive:
-      query.data?.status === 'active' || query.data?.status === 'trialing',
-  };
 }
 
 // ─── useCheckout ──────────────────────────────────────────────────────────────
@@ -99,5 +76,19 @@ export function useCancelSubscription() {
       toast.success('Subscription will cancel at the end of the billing period.');
     },
     onError: () => toast.error('Failed to cancel subscription.'),
+  });
+}
+
+// ─── useResumeSubscription ────────────────────────────────────────────────────
+
+export function useResumeSubscription() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => billingApi.resumeSubscription().then((r) => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: billingKeys.subscription() });
+      toast.success('Subscription resumed.');
+    },
+    onError: () => toast.error('Failed to resume subscription.'),
   });
 }
