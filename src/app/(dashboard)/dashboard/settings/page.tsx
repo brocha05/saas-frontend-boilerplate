@@ -27,7 +27,7 @@ export default function SettingsPage() {
 
       <Card>
         <CardContent className="p-0">
-          {sections.map(({ href, icon: Icon, title, description }, i) => (
+          {sections.map(({ href, icon: Icon, title, description }) => (
             <Link
               key={href}
               href={href}

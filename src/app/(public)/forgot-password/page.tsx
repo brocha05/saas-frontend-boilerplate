@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
                   <CheckCircle2 className="h-7 w-7 text-emerald-600" />
                 </div>
                 <p className="text-center text-sm text-muted-foreground">
-                  If an account exists with that email, you'll receive instructions shortly.
+                  If an account exists with that email, you&apos;ll receive instructions shortly.
                 </p>
               </div>
             ) : (

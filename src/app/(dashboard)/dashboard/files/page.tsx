@@ -7,7 +7,7 @@ import {
   Trash2,
   Download,
   FileText,
-  Image,
+  Image as ImageIcon,
   File,
   MoreHorizontal,
 } from 'lucide-react';
@@ -38,7 +38,7 @@ function formatBytes(bytes: number): string {
 }
 
 function FileIcon({ mimeType }: { mimeType: string }) {
-  if (mimeType.startsWith('image/')) return <Image className="h-5 w-5 text-blue-500" />;
+  if (mimeType.startsWith('image/')) return <ImageIcon className="h-5 w-5 text-blue-500" />;
   if (mimeType.includes('pdf') || mimeType.includes('text'))
     return <FileText className="h-5 w-5 text-red-500" />;
   return <File className="h-5 w-5 text-muted-foreground" />;

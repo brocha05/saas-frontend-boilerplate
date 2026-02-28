@@ -23,7 +23,6 @@ export function UserDropdown() {
   const initials = formatInitials(user.firstName, user.lastName);
   const fullName = `${user.firstName} ${user.lastName}`;
   const isSuperAdmin = user.role === 'SUPER_ADMIN';
-  const basePath = isSuperAdmin ? '/admin' : '/dashboard';
 
   return (
     <DropdownMenu>

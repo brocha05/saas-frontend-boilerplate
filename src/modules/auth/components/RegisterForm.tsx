@@ -24,8 +24,7 @@ export function RegisterForm() {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = (data: RegisterFormValues) => {
-    const { confirmPassword: _, ...payload } = data;
+  const onSubmit = ({ confirmPassword: _confirmPassword, ...payload }: RegisterFormValues) => {
     registerUser(payload);
   };
 
