@@ -37,7 +37,10 @@ import type { Plan } from '@/types';
 
 const planSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  slug: z.string().min(1, 'Slug is required').regex(/^[a-z0-9-]+$/, 'Only lowercase letters, numbers and hyphens'),
+  slug: z
+    .string()
+    .min(1, 'Slug is required')
+    .regex(/^[a-z0-9-]+$/, 'Only lowercase letters, numbers and hyphens'),
   stripePriceId: z.string().min(1, 'Stripe Price ID is required'),
   stripeProductId: z.string().min(1, 'Stripe Product ID is required'),
   interval: z.enum(['MONTH', 'YEAR']),
@@ -88,7 +91,9 @@ function PlanFormFields({ form }: { form: ReturnType<typeof useForm<PlanFormValu
         <Label>Stripe Product ID *</Label>
         <Input placeholder="prod_1ABC..." {...form.register('stripeProductId')} />
         {form.formState.errors.stripeProductId && (
-          <p className="text-xs text-destructive">{form.formState.errors.stripeProductId.message}</p>
+          <p className="text-xs text-destructive">
+            {form.formState.errors.stripeProductId.message}
+          </p>
         )}
       </div>
 
@@ -162,7 +167,10 @@ export default function AdminPlansPage() {
         interval: values.interval,
         price: values.price,
         currency: values.currency,
-        features: values.features.split('\n').map((f) => f.trim()).filter(Boolean),
+        features: values.features
+          .split('\n')
+          .map((f) => f.trim())
+          .filter(Boolean),
       },
       {
         onSuccess: () => {
@@ -186,7 +194,10 @@ export default function AdminPlansPage() {
           interval: values.interval,
           price: values.price,
           currency: values.currency,
-          features: values.features.split('\n').map((f) => f.trim()).filter(Boolean),
+          features: values.features
+            .split('\n')
+            .map((f) => f.trim())
+            .filter(Boolean),
         },
       },
       { onSuccess: () => setEditPlan(null) }
@@ -270,9 +281,7 @@ export default function AdminPlansPage() {
                     </div>
                   </div>
 
-                  <p className="text-sm font-medium">
-                    {formatPrice(plan.price, plan.currency)}
-                  </p>
+                  <p className="text-sm font-medium">{formatPrice(plan.price, plan.currency)}</p>
 
                   <p className="text-sm text-muted-foreground">
                     {plan.interval === 'MONTH' ? 'Monthly' : 'Yearly'}
@@ -315,7 +324,8 @@ export default function AdminPlansPage() {
                   <div>
                     <p className="font-semibold">{plan.name}</p>
                     <p className="text-sm text-muted-foreground">
-                      {formatPrice(plan.price, plan.currency)}/{plan.interval === 'MONTH' ? 'mo' : 'yr'}
+                      {formatPrice(plan.price, plan.currency)}/
+                      {plan.interval === 'MONTH' ? 'mo' : 'yr'}
                     </p>
                   </div>
                   <Badge variant={plan.isActive ? 'default' : 'secondary'}>
@@ -343,14 +353,22 @@ export default function AdminPlansPage() {
       )}
 
       {/* Create Dialog */}
-      <Dialog open={createOpen} onOpenChange={(o) => { setCreateOpen(o); if (!o) createForm.reset({ interval: 'MONTH', currency: 'usd', features: '' }); }}>
+      <Dialog
+        open={createOpen}
+        onOpenChange={(o) => {
+          setCreateOpen(o);
+          if (!o) createForm.reset({ interval: 'MONTH', currency: 'usd', features: '' });
+        }}
+      >
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Create new plan</DialogTitle>
           </DialogHeader>
           <PlanFormFields form={createForm} />
           <DialogFooter>
-            <Button variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setCreateOpen(false)}>
+              Cancel
+            </Button>
             <Button onClick={createForm.handleSubmit(handleCreate)} disabled={creating}>
               {creating ? 'Creating...' : 'Create plan'}
             </Button>
@@ -366,7 +384,9 @@ export default function AdminPlansPage() {
           </DialogHeader>
           <PlanFormFields form={editForm} />
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditPlan(null)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setEditPlan(null)}>
+              Cancel
+            </Button>
             <Button onClick={editForm.handleSubmit(handleEdit)} disabled={updating}>
               {updating ? 'Saving...' : 'Save changes'}
             </Button>
