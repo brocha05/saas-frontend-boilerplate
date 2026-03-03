@@ -7,11 +7,11 @@ export interface ApiResponse<T> {
 }
 
 export interface PaginatedResponse<T> {
-  data: T[];
+  items: T[];
   total: number;
   page: number;
   limit: number;
-  totalPages: number;
+  pages: number;
 }
 
 export interface ApiError {
@@ -101,6 +101,7 @@ export interface Subscription {
   companyId: string;
   planId: string;
   plan?: Plan;
+  company?: { id: string; name: string; slug: string };
   stripeSubscriptionId: string;
   status: SubscriptionStatus;
   currentPeriodStart: string;

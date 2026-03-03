@@ -14,6 +14,7 @@ import {
   FolderOpen,
   Shield,
   BarChart3,
+  Package,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils/cn';
@@ -117,6 +118,7 @@ export function Sidebar() {
         { href: '/admin/dashboard', label: 'Overview', icon: BarChart3, exact: true },
         { href: '/admin/companies', label: 'Companies', icon: Building2 },
         { href: '/admin/subscriptions', label: 'Subscriptions', icon: CreditCard },
+        { href: '/admin/plans', label: 'Plans', icon: Package },
       ],
     },
   ];
